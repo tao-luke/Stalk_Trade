@@ -1,4 +1,4 @@
-package com.example.stalk.ui
+package com.example.stalk.ui.overviewTable
 
 import android.view.LayoutInflater
 import android.view.View
@@ -9,7 +9,10 @@ import com.example.stalk.R
 
 data class TableRowData(
     val column1: String,
-    val column2: String
+    val column2: String,
+    val column3: String,
+    val column4: String,
+    val column5: String,
     // Add more properties for additional columns if needed
 )
 
@@ -17,8 +20,11 @@ class TableAdapter(private val tableData: List<TableRowData>) :
     RecyclerView.Adapter<TableAdapter.ViewHolder>() {
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val column1TextView: TextView = itemView.findViewById(R.id.column1TextView)
-        val column2TextView: TextView = itemView.findViewById(R.id.column2TextView)
+        val dateTextView: TextView = itemView.findViewById(R.id.dateCol)
+        val tickerTextView: TextView = itemView.findViewById(R.id.tickerCol)
+        val typeTextView: TextView = itemView.findViewById(R.id.typeCol)
+        val amountTextView: TextView = itemView.findViewById(R.id.amountCol)
+        val nameTextView: TextView = itemView.findViewById(R.id.nameCol)
         // Add more TextViews or other views for additional columns if needed
     }
 
@@ -29,8 +35,11 @@ class TableAdapter(private val tableData: List<TableRowData>) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val rowData = tableData[position]
-        holder.column1TextView.text = rowData.column1
-        holder.column2TextView.text = rowData.column2
+        holder.dateTextView.text = rowData.column1
+        holder.tickerTextView.text = rowData.column2
+        holder.typeTextView.text = rowData.column3
+        holder.amountTextView.text = rowData.column4
+        holder.nameTextView.text = rowData.column5
         // Bind data to additional views for additional columns if needed
     }
 

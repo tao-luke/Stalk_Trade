@@ -2,20 +2,41 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
-
-    <!-- Add TextViews or other views here to represent each column in a row -->
-    <TextView
-        android:id="@+id/column1TextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Column 1"/>
+    android:orientation="horizontal"
+    android:padding="8dp">
 
     <TextView
-        android:id="@+id/column2TextView"
-        android:layout_width="wrap_content"
+        android:id="@+id/dateCol"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Column 2"/>
+        android:layout_weight="1"
+        android:gravity="center" />
 
-    <!-- Add more TextViews for additional columns if needed -->
+    <TextView
+        android:id="@+id/tickerCol"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center" />
+
+    <TextView
+        android:id="@+id/typeCol"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center" />
+
+    <TextView
+        android:id="@+id/amountCol"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center" />
+
+    <TextView
+        android:id="@+id/nameCol"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center" />
 </LinearLayout>

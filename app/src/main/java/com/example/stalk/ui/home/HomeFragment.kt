@@ -10,9 +10,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.stalk.databinding.FragmentHomeBinding
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.stalk.R
-import com.example.stalk.ui.TableAdapter
-import com.example.stalk.ui.TableRowData
+import com.example.stalk.ui.overviewTable.TableAdapter
+import com.example.stalk.ui.overviewTable.TableRowData
 
 class HomeFragment : Fragment() {
 
@@ -51,8 +50,8 @@ class HomeFragment : Fragment() {
         tableRecyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         // Prepare sample data
-        tableData.add(TableRowData("Data 1", "Data 2"))
-        tableData.add(TableRowData("Data 3", "Data 4"))
+        tableData.add(TableRowData("blah", "blah", "blah", "blah", "blah"))
+        tableData.add(TableRowData("blah", "blah", "blah", "blah", "blah"))
 
         // Initialize and set adapter
         tableAdapter = TableAdapter(tableData)
