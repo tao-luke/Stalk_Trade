@@ -34,7 +34,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Date"
+            android:text="@string/date"
             android:textStyle="bold"
             android:gravity="center" />
 
@@ -42,7 +42,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Ticker"
+            android:text="@string/ticker"
             android:textStyle="bold"
             android:gravity="center" />
 
@@ -50,7 +50,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Type"
+            android:text="@string/type"
             android:textStyle="bold"
             android:gravity="center" />
 
@@ -58,7 +58,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Amount"
+            android:text="@string/amount"
             android:textStyle="bold"
             android:gravity="center" />
 
@@ -66,7 +66,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Name"
+            android:text="@string/name"
             android:textStyle="bold"
             android:gravity="center" />
     </LinearLayout>
