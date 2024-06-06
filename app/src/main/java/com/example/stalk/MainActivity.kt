@@ -8,10 +8,15 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.stalk.databinding.ActivityMainBinding
+import android.util.Log
+import androidx.activity.viewModels
+import com.example.stalk.ui.viewmodel.TradeViewModel
+import androidx.lifecycle.Observer
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private val tradeViewModel: TradeViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,5 +33,19 @@ class MainActivity : AppCompatActivity() {
                 R.id.navigation_home, R.id.navigation_search, R.id.navigation_notifications))
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
+
+
+        tradeViewModel.trades.observe(this, Observer { trades ->
+            // Update the UI with the list of trades
+            trades?.let {
+                for (trade in it) {
+                    Log.d("MainActivity", trade.toString())
+                }
+            }
+        })
+
+        // Fetch trades (example)
+        tradeViewModel.fetchRecentTrades(10)
     }
 }
