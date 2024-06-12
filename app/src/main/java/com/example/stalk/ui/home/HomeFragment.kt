@@ -50,8 +50,11 @@ class HomeFragment : Fragment() {
         tableRecyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         // Prepare sample data
-        tableData.add(TableRowData("blah", "blah", "blah", "blah", "blah"))
-        tableData.add(TableRowData("blah", "blah", "blah", "blah", "blah"))
+        tableData.add(TableRowData("2024-04-23", "AAPL", "Sale", "$1,001 - $15,000", "Shelley M Capito"))
+        tableData.add(TableRowData("2024-03-12", "AAPL", "Sale (Full)", "$15,001 - $50,000", "Tommy Tuberville"))
+        tableData.add(TableRowData("2024-04-23", "AAPL", "Sale", "$1,001 - $15,000", "Shelley M Capito"))
+        tableData.add(TableRowData("2024-03-12", "AAPL", "Sale (Full)", "$15,001 - $50,000", "Tommy Tuberville"))
+        tableData.add(TableRowData("2024-04-23", "AAPL", "Sale", "$1,001 - $15,000", "Shelley M Capito"))
 
         // Initialize and set adapter
         tableAdapter = TableAdapter(tableData)
