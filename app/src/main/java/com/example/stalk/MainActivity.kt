@@ -12,11 +12,13 @@ import android.util.Log
 import androidx.activity.viewModels
 import com.example.stalk.ui.viewmodel.TradeViewModel
 import androidx.lifecycle.Observer
+import com.example.stalk.ui.viewmodel.NameViewModel
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private val tradeViewModel: TradeViewModel by viewModels()
+    private val nameViewModel: NameViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,6 +46,17 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         })
+
+        nameViewModel.names.observe(this, Observer { names ->
+            // Update the UI with the list of trades
+            names?.let {
+                for (name in it) {
+                    Log.d("MainActivity", name.toString())
+                }
+            }
+        })
+
+        nameViewModel.fetchNames()
 
         // Fetch trades (example)
         tradeViewModel.fetchRecentTrades(10)
