@@ -8,4 +8,5 @@
     <string name="type">Type</string>
     <string name="amount">Amount</string>
     <string name="name">Name</string>
+    <string name="title_saved">Saved</string>
 </resources>
