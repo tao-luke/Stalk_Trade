@@ -8,6 +8,10 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.stalk.databinding.FragmentHomeBinding
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.stalk.ui.overviewTable.TableAdapter
+import com.example.stalk.ui.overviewTable.TableRowData
 
 class HomeFragment : Fragment() {
 
@@ -16,6 +20,9 @@ class HomeFragment : Fragment() {
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+    private lateinit var tableRecyclerView: RecyclerView
+    private lateinit var tableAdapter: TableAdapter
+    private var tableData: MutableList<TableRowData> = mutableListOf()
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -35,6 +42,21 @@ class HomeFragment : Fragment() {
         return root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // Initialize RecyclerView
+        tableRecyclerView = binding.tableRecyclerView
+        tableRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+
+        // Prepare sample data
+        tableData.add(TableRowData("blah", "blah", "blah", "blah", "blah"))
+        tableData.add(TableRowData("blah", "blah", "blah", "blah", "blah"))
+
+        // Initialize and set adapter
+        tableAdapter = TableAdapter(tableData)
+        tableRecyclerView.adapter = tableAdapter
+    }
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
