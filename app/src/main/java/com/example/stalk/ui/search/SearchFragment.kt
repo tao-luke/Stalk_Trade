@@ -3,15 +3,20 @@ package com.example.stalk.ui.search
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.stalk.databinding.FragmentSearchBinding
+import com.example.stalk.ui.viewmodel.NameViewModel
+import com.example.stalk.ui.viewmodel.SearchViewModel
 import com.example.stalk.ui.viewmodel.TradeViewModel
 
 class SearchFragment : Fragment() {
@@ -20,6 +25,9 @@ class SearchFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var searchViewModel: SearchViewModel
     private val tradeViewModel: TradeViewModel by activityViewModels()
+    private val nameViewModel: NameViewModel by activityViewModels()
+
+    private lateinit var nameAdapter: ArrayAdapter<String>
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,13 +39,24 @@ class SearchFragment : Fragment() {
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        // Observing LiveData from SearchViewModel
-        searchViewModel.text.observe(viewLifecycleOwner, Observer { newText ->
-            binding.textView.text = newText
+        // Set up the AutoCompleteTextView adapter
+        nameAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, mutableListOf())
+        binding.searchEditText.setAdapter(nameAdapter)
+
+        // Observe names from NameViewModel
+        nameViewModel.names.observe(viewLifecycleOwner, Observer { names ->
+            val nameStrings = names.map { "${it.firstName} ${it.lastName}" }
+            nameAdapter.clear()
+            nameAdapter.addAll(nameStrings)
+            nameAdapter.notifyDataSetChanged()
         })
 
-        searchViewModel.searchQuery.observe(viewLifecycleOwner, Observer { query ->
-            // Handle search query update if needed
+        // Fetch names from the repository
+        nameViewModel.fetchNames()
+
+        // Observe text from SearchViewModel
+        searchViewModel.text.observe(viewLifecycleOwner, Observer { newText ->
+            binding.textView.text = newText
         })
 
         // Handling button click to navigate to TransactionDetailsFragment
@@ -69,6 +88,15 @@ class SearchFragment : Fragment() {
             override fun afterTextChanged(s: Editable?) {}
         })
 
+        // Set an OnEditorActionListener to trigger the search button click when "Enter" is pressed
+        binding.searchEditText.setOnEditorActionListener(TextView.OnEditorActionListener { v, actionId, event ->
+            if (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER) {
+                binding.buttonSearch.performClick()
+                return@OnEditorActionListener true
+            }
+            false
+        })
+        // TODO! we need to add a char limit on the search box!
         return root
     }
 

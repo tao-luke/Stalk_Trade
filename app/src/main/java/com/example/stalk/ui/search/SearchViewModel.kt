@@ -1,20 +1,18 @@
-package com.example.stalk.ui.search
+package com.example.stalk.ui.viewmodel
 
-import android.annotation.SuppressLint
-import androidx.activity.viewModels
-import androidx.compose.runtime.Composable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.stalk.ui.viewmodel.TradeViewModel
 
 class SearchViewModel : ViewModel() {
-    private val _text = MutableLiveData<String>()
 
-    val text: LiveData<String> get() = _text
+    private val _text = MutableLiveData<String>().apply {
+        value = "Search results will appear here"
+    }
+    val text: LiveData<String> = _text
 
     private val _searchQuery = MutableLiveData<String>()
-    val searchQuery: LiveData<String> get() = _searchQuery
+    val searchQuery: LiveData<String> = _searchQuery
 
     fun updateText(newText: String) {
         _text.value = newText
