@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.details.TransactionDetailsFragment">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/textFirstName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="First Name:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textLastName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Last Name:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textOffice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Office:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textLink"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Link:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textDateReceived"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Date Received:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textTransactionDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Transaction Date:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textOwner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Owner:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textAssetDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Asset Description:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textAssetType"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Asset Type:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textType"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Type:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textAmount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Amount:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textComment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Comment:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textSymbol"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Symbol:"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

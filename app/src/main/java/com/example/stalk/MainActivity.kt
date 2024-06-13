@@ -30,11 +30,9 @@ class MainActivity : AppCompatActivity() {
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         val appBarConfiguration = AppBarConfiguration(setOf(
-                R.id.navigation_home, R.id.navigation_search, R.id.navigation_saved))
+            R.id.navigation_home, R.id.navigation_search, R.id.navigation_saved))
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
-
-
 
         tradeViewModel.trades.observe(this, Observer { trades ->
             // Update the UI with the list of trades
@@ -47,5 +45,10 @@ class MainActivity : AppCompatActivity() {
 
         // Fetch trades (example)
         tradeViewModel.fetchRecentTrades(10)
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        val navController = findNavController(R.id.nav_host_fragment_activity_main)
+        return navController.navigateUp() || super.onSupportNavigateUp()
     }
 }

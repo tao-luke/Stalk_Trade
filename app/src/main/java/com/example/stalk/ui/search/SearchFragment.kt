@@ -7,15 +7,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.example.stalk.databinding.FragmentSearchBinding
+import com.example.stalk.ui.viewmodel.TradeViewModel
 
 class SearchFragment : Fragment() {
 
     private var _binding: FragmentSearchBinding? = null
     private val binding get() = _binding!!
     private lateinit var searchViewModel: SearchViewModel
+    private val tradeViewModel: TradeViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -27,19 +31,30 @@ class SearchFragment : Fragment() {
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        // Observing LiveData from ViewModel
+        // Observing LiveData from SearchViewModel
         searchViewModel.text.observe(viewLifecycleOwner, Observer { newText ->
-            // Update UI with new text
             binding.textView.text = newText
         })
 
         searchViewModel.searchQuery.observe(viewLifecycleOwner, Observer { query ->
-            // Handle search query update (todo!)
-            // For example, filter a list based on the query
+            // Handle search query update if needed
         })
 
-        // Handling button click to update ViewModel
-        binding.button.setOnClickListener {
+        // Handling button click to navigate to TransactionDetailsFragment
+        binding.buttonTransactionDetails.setOnClickListener {
+            val firstTrade = tradeViewModel.trades.value?.firstOrNull()
+            if (firstTrade != null) {
+                val action = SearchFragmentDirections
+                    .actionNavigationSearchToTransactionDetailsFragment()
+                findNavController().navigate(action)
+            } else {
+                // Handle case when there are no trades available
+                // Example: Toast.makeText(requireContext(), "No trades available", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        // Handling the original search button click
+        binding.buttonSearch.setOnClickListener {
             searchViewModel.updateText("You searched for someone!")
         }
 
@@ -53,7 +68,7 @@ class SearchFragment : Fragment() {
 
             override fun afterTextChanged(s: Editable?) {}
         })
-        // We should add click away zoom out as well
+
         return root
     }
 

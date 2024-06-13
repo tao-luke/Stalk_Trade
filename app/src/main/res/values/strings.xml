@@ -9,4 +9,6 @@
     <string name="amount">Amount</string>
     <string name="name">Name</string>
     <string name="title_saved">Saved</string>
+    <string name="title_transaction_details">Transaction Details</string>
+    <string name="back_button">Back</string>
 </resources>
