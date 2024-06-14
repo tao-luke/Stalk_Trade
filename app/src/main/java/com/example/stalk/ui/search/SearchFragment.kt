@@ -14,6 +14,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.example.stalk.R
 import com.example.stalk.databinding.FragmentSearchBinding
 import com.example.stalk.ui.viewmodel.NameViewModel
 import com.example.stalk.ui.viewmodel.SearchViewModel
@@ -75,6 +76,8 @@ class SearchFragment : Fragment() {
         // Handling the original search button click
         binding.buttonSearch.setOnClickListener {
             searchViewModel.updateText("You searched for someone!")
+            // Navigate to PoliticianFragment
+            findNavController().navigate(R.id.action_searchFragment_to_politicianFragment)
         }
 
         // Listen for text changes in the search bar

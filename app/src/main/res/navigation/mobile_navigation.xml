@@ -16,19 +16,19 @@
         android:label="@string/title_search"
         tools:layout="@layout/fragment_search">
         <action
-            android:id="@+id/action_navigation_search_to_transactionDetailsFragment"
-            app:destination="@id/transactionDetailsFragment" />
+            android:id="@+id/action_searchFragment_to_politicianFragment"
+            app:destination="@id/politicianFragment" />
     </fragment>
-
-    <fragment
-        android:id="@+id/navigation_saved"
-        android:name="com.example.stalk.ui.saved.SavedFragment"
-        android:label="@string/title_saved"
-        tools:layout="@layout/fragment_saved" />
 
     <fragment
         android:id="@+id/transactionDetailsFragment"
         android:name="com.example.stalk.ui.details.TransactionDetailsFragment"
         android:label="@string/title_transaction_details"
         tools:layout="@layout/fragment_transaction_details" />
+
+    <fragment
+        android:id="@+id/politicianFragment"
+        android:name="com.example.stalk.ui.politician.PoliticianFragment"
+        android:label="@string/title_politician"
+        tools:layout="@layout/fragment_politician" />
 </navigation>
