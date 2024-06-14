@@ -32,17 +32,14 @@ class TransactionDetailsFragment : Fragment() {
             firstTrade?.let { trade ->
                 binding.textFirstName.text = "First Name: ${trade.firstName}"
                 binding.textLastName.text = "Last Name: ${trade.lastName}"
-                binding.textOffice.text = "Office: ${trade.office}"
                 binding.textLink.text = "Link: ${trade.link}"
-                binding.textDateReceived.text = "Date Received: ${trade.dateReceived}"
+                binding.textDateReceived.text = "Date Received: ${trade.dateRecieved}"
                 binding.textTransactionDate.text = "Transaction Date: ${trade.transactionDate}"
                 binding.textOwner.text = "Owner: ${trade.owner}"
                 binding.textAssetDescription.text = "Asset Description: ${trade.assetDescription}"
-                binding.textAssetType.text = "Asset Type: ${trade.assetType}"
                 binding.textType.text = "Type: ${trade.type}"
                 binding.textAmount.text = "Amount: ${trade.amount}"
-                binding.textComment.text = "Comment: ${trade.comment}"
-                binding.textSymbol.text = "Symbol: ${trade.symbol}"
+                binding.textSymbol.text = "Ticker: ${trade.ticker}"
             }
         })
     }

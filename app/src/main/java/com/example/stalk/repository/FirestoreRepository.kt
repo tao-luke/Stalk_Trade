@@ -6,7 +6,7 @@ import com.google.firebase.firestore.Query
 class FirestoreRepository {
 
     private val db = FirebaseFirestore.getInstance()
-    private val trades = db.collection("trades")
+    private val trades = db.collection("all_trades")
     private val names = db.collection("names")
 
     fun getTradesByName(firstName: String, lastName: String): Query {

@@ -2,14 +2,70 @@ import requests
 import firebase_admin
 from firebase_admin import credentials, firestore
 import hashlib
+from datetime import datetime, timedelta
 
 # Initialize Firebase Admin SDK
 cred = credentials.Certificate("stalk-db-firebase-adminsdk-g64um-cd9cc7e2a2.json")
 firebase_admin.initialize_app(cred)
 
+class Trade:
+    def __init__(self, firstName, lastName, transactionDate, owner, assetDescription, type, amount, link, dateRecieved, ticker):
+        self.firstName = firstName
+        self.lastName = lastName
+        self.transactionDate = transactionDate
+        self.owner = owner
+        self.assetDescription = assetDescription
+        self.type = type
+        self.amount = amount
+        self.link = link
+        self.dateRecieved = dateRecieved
+        self.ticker = ticker
+
+def parse_senate_trading(data):
+    trades = []
+    for item in data:
+        trade = Trade(
+            firstName=item.get("firstName"),
+            lastName=item.get("lastName"),
+            transactionDate=item.get("transactionDate"),
+            owner=item.get("owner"),
+            assetDescription=item.get("assetDescription"),
+            type=item.get("type"),
+            amount=item.get("amount"),
+            link=item.get("link"),
+            dateRecieved=item.get("dateRecieved"),
+            ticker=item.get("symbol")
+        )
+        trades.append(trade.__dict__)  # Convert Trade object to dictionary
+    return trades
+
+def parse_senate_disclosure(data):
+    trades = []
+    for item in data:
+        trade = Trade(
+            firstName=item.get("representative").split(" ", 1)[0],
+            lastName=item.get("representative").split(" ", 1)[1],
+            transactionDate=item.get("transactionDate"),
+            owner=item.get("owner"),
+            assetDescription=item.get("assetDescription"),
+            type=item.get("type"),
+            amount=item.get("amount"),
+            link=item.get("link"),
+            dateRecieved=item.get("disclosureDate"),
+            ticker=item.get("ticker")
+        )
+        trades.append(trade.__dict__)  # Convert Trade object to dictionary
+    return trades
+
 # Function to fetch trading data from external API
 def fetch_data_senate_trading(page):
     url = f"https://financialmodelingprep.com/api/v4/senate-trading-rss-feed?page={page}&apikey=ae3hqrlXlU4y481FMMLugIrqOJMEQHAg"
+    response = requests.get(url)
+    return response.json()
+
+# Function to fetch trading data from external API
+def fetch_data_senate_disclosure(page):
+    url = f"https://financialmodelingprep.com/api/v4/senate-disclosure-rss-feed?page={page}&apikey=ae3hqrlXlU4y481FMMLugIrqOJMEQHAg"
     response = requests.get(url)
     return response.json()
 
@@ -28,9 +84,9 @@ def name_exists(collection_ref, first_name, last_name):
     return len(query) > 0
 
 # Function to upload trade data to Firestore
-def upload_trade_data_to_firestore(data):
+def upload_trade_data_to_firestore(data, collection):
     db = firestore.client()
-    collection_ref = db.collection("trades")
+    collection_ref = db.collection(collection)
     # Assuming data is a dictionary or list of dictionaries
     if isinstance(data, dict):
         # Calculate hash of content
@@ -68,16 +124,45 @@ def upload_names_to_firestore(data):
             }
             names_collection_ref.add(name_data)
 
-# Main function to run periodically
+def delete_old_entries(collection):
+    one_year_ago = datetime.now() - timedelta(days=365)
+    db = firestore.client()
+    collection_ref = db.collection(collection)
+    docs = collection_ref.stream()
+    
+    for doc in docs:
+        doc_data = doc.to_dict()
+        date_str = doc_data.get('transactionDate')
+        
+        if date_str:
+            try:
+                date_obj = datetime.strptime(date_str, '%Y-%m-%d')
+                if date_obj < one_year_ago:
+                    print(f"Deleting document ID: {doc.id} with date: {date_str}")
+                    collection_ref.document(doc.id).delete()
+            except ValueError as e:
+                print(f"Error parsing date for document ID: {doc.id} - {e}")
+
+def trading_backfill(collection):
+    for i in range(0, 31):
+        data = fetch_data_senate_trading(i)
+        parsed_data = parse_senate_trading(data)
+        upload_trade_data_to_firestore(parsed_data, collection)
+        upload_names_to_firestore(parsed_data)
+        print("Page ", i, " complete")
+
+def disclosure_backfill(collection):
+    for i in range(0, 31):
+        data = fetch_data_senate_disclosure(i)
+        parsed_data = parse_senate_disclosure(data)
+        upload_trade_data_to_firestore(parsed_data, collection)
+        upload_names_to_firestore(parsed_data)
+        print("Page ", i, " complete")
+
+
 def main():
-    # Fetch trade data from API
-    trade_data = fetch_data_senate_trading(0)
+      
     
-    # Upload trade data to Firestore
-    upload_trade_data_to_firestore(trade_data)
-    
-    # Upload unique names to Firestore
-    upload_names_to_firestore(trade_data)
 
 if __name__ == "__main__":
     main()
