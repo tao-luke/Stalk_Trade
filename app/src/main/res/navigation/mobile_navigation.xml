@@ -16,6 +16,9 @@
         android:label="@string/title_search"
         tools:layout="@layout/fragment_search">
         <action
+            android:id="@+id/action_navigation_search_to_transactionDetailsFragment"
+            app:destination="@id/transactionDetailsFragment" />
+        <action
             android:id="@+id/action_searchFragment_to_politicianFragment"
             app:destination="@id/politicianFragment" />
     </fragment>
