@@ -34,4 +34,10 @@
         android:name="com.example.stalk.ui.politician.PoliticianFragment"
         android:label="@string/title_politician"
         tools:layout="@layout/fragment_politician" />
+
+    <fragment
+        android:id="@+id/navigation_saved"
+        android:name="com.example.stalk.ui.saved.SavedFragment"
+        android:label="@string/title_saved"
+        tools:layout="@layout/fragment_saved" />
 </navigation>
