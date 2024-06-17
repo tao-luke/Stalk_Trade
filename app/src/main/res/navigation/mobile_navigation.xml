@@ -20,7 +20,12 @@
             app:destination="@id/transactionDetailsFragment" />
         <action
             android:id="@+id/action_searchFragment_to_politicianFragment"
-            app:destination="@id/politicianFragment" />
+            app:destination="@id/politicianFragment">
+            <argument
+                android:name="politicianName"
+                app:argType="string"
+                app:nullable="false" />
+        </action>
     </fragment>
 
     <fragment
@@ -33,7 +38,12 @@
         android:id="@+id/politicianFragment"
         android:name="com.example.stalk.ui.politician.PoliticianFragment"
         android:label="@string/title_politician"
-        tools:layout="@layout/fragment_politician" />
+        tools:layout="@layout/fragment_politician">
+        <argument
+            android:name="politicianName"
+            app:argType="string"
+            app:nullable="false" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_saved"

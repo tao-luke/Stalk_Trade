@@ -31,8 +31,7 @@ class SearchFragment : Fragment() {
     private lateinit var nameAdapter: ArrayAdapter<String>
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+        inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         searchViewModel = ViewModelProvider(this)[SearchViewModel::class.java]
@@ -60,24 +59,32 @@ class SearchFragment : Fragment() {
             binding.textView.text = newText
         })
 
-        // Handling button click to navigate to TransactionDetailsFragment
-        binding.buttonTransactionDetails.setOnClickListener {
-            val firstTrade = tradeViewModel.trades.value?.firstOrNull()
-            if (firstTrade != null) {
-                val action = SearchFragmentDirections
-                    .actionNavigationSearchToTransactionDetailsFragment()
-                findNavController().navigate(action)
-            } else {
-                // Handle case when there are no trades available
-                // Example: Toast.makeText(requireContext(), "No trades available", Toast.LENGTH_SHORT).show()
-            }
-        }
-
         // Handling the original search button click
         binding.buttonSearch.setOnClickListener {
-            searchViewModel.updateText("You searched for someone!")
-            // Navigate to PoliticianFragment
-            findNavController().navigate(R.id.action_searchFragment_to_politicianFragment)
+            val searchName = binding.searchEditText.text.toString()
+            val nameParts = searchName.split(" ")
+            if (nameParts.size == 2) {
+                val firstName = nameParts[0]
+                val lastName = nameParts[1]
+
+                // Fetch trades for the given name
+                tradeViewModel.fetchRecentTradesByName(firstName, lastName, 10)
+
+                // Observe the trades and navigate once they are fetched
+                tradeViewModel.trades.observe(viewLifecycleOwner, Observer { trades ->
+                    if (trades.isNotEmpty()) {
+                        // Navigate to PoliticianFragment with the name as an argument
+                        val action = SearchFragmentDirections.actionSearchFragmentToPoliticianFragment(searchName)
+                        findNavController().navigate(action)
+                    } else {
+                        // Handle case when there are no trades available
+                        // Example: Toast.makeText(requireContext(), "No trades available", Toast.LENGTH_SHORT).show()
+                    }
+                })
+            } else {
+                // Handle case where the name is not in the correct format
+                // Example: Toast.makeText(requireContext(), "Please enter a valid name", Toast.LENGTH_SHORT).show()
+            }
         }
 
         // Listen for text changes in the search bar
