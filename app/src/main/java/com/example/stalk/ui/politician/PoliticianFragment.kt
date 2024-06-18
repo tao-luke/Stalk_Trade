@@ -43,6 +43,8 @@ class PoliticianFragment : Fragment() {
         // Display the politician name and image at the top
         val politicianName = args.politicianName
         val politicianImage = args.politicianImage
+        val nameParts = politicianName.split(" ")
+
         binding.textViewPoliticianName.text = politicianName
 
         // Load the image using Glide with error handling and transformations
@@ -54,7 +56,6 @@ class PoliticianFragment : Fragment() {
 
         binding.notificationBell.setOnClickListener {
             // Handle notification bell click
-            findNavController().navigate(R.id.navigation_saved)
         }
 
         // Initialize RecyclerView
@@ -65,7 +66,11 @@ class PoliticianFragment : Fragment() {
         tableAdapter = TableAdapter(tableData)
         tableRecyclerView.adapter = tableAdapter
 
-        // Observe the trades for the politician
+        // Fetch and observe the trades for the politician
+        if (nameParts.size == 2) {
+            tradeViewModel.fetchRecentTradesByName(nameParts[0], nameParts[1], 10) // Adjust limit as needed
+        }
+
         tradeViewModel.trades.observe(viewLifecycleOwner) { tradeHistory ->
             updateTradeHistoryTable(tradeHistory)
         }
