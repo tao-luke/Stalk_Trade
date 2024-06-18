@@ -4,11 +4,13 @@ import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.stalk.R
 import com.example.stalk.databinding.FragmentPoliticianBinding
 import com.example.stalk.ui.overviewTable.TableAdapter
@@ -43,9 +45,11 @@ class PoliticianFragment : Fragment() {
         val politicianImage = args.politicianImage
         binding.textViewPoliticianName.text = politicianName
 
-        // Load the image using Glide
+        // Load the image using Glide with error handling and transformations
         Glide.with(this)
             .load(politicianImage)
+            .transform(CenterCrop(), RoundedCorners(20))
+            .error(R.drawable.sample_politician) // Specify the default image resource here
             .into(binding.politicianPicture)
 
         binding.notificationBell.setOnClickListener {
