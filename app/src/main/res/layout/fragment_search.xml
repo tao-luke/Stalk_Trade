@@ -18,16 +18,10 @@
         android:layout_height="wrap_content"
         android:text="Search" />
 
-    <Button
-        android:id="@+id/buttonTransactionDetails"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Show Transaction Details" />
-
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Search results will appear here" />
+        android:text="Search for a politician!" />
 
 </LinearLayout>

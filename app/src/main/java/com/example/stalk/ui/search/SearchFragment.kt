@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -54,23 +55,18 @@ class SearchFragment : Fragment() {
         // Fetch names from the repository
         nameViewModel.fetchNames()
 
-        // Observe text from SearchViewModel
-        searchViewModel.text.observe(viewLifecycleOwner, Observer { newText ->
-            binding.textView.text = newText
-        })
-
         // Handling the original search button click
         binding.buttonSearch.setOnClickListener {
             val searchName = binding.searchEditText.text.toString()
-            val nameParts = searchName.split(" ")
+            val nameParts = searchName.split(" ", limit = 2)
             if (nameParts.size == 2) {
                 val firstName = nameParts[0]
                 val lastName = nameParts[1]
 
-                // Fetch trades for the given name
+                // Fetch politician by name
                 tradeViewModel.fetchRecentTradesByName(firstName, lastName, 10)
 
-                // Observe the trades and navigate once they are fetched
+                // Observe the politician and navigate once they are fetched
                 tradeViewModel.trades.observe(viewLifecycleOwner, Observer { trades ->
                     if (trades.isNotEmpty()) {
                         // Navigate to PoliticianFragment with the name as an argument
@@ -78,12 +74,12 @@ class SearchFragment : Fragment() {
                         findNavController().navigate(action)
                     } else {
                         // Handle case when there are no trades available
-                        // Example: Toast.makeText(requireContext(), "No trades available", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "No recent trades available", Toast.LENGTH_SHORT).show()
                     }
                 })
             } else {
                 // Handle case where the name is not in the correct format
-                // Example: Toast.makeText(requireContext(), "Please enter a valid name", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Please enter a valid name", Toast.LENGTH_SHORT).show()
             }
         }
 
