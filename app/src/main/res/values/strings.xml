@@ -12,4 +12,5 @@
     <string name="title_transaction_details">Transaction Details</string>
     <string name="back_button">Back</string>
     <string name="title_politician">Politician</string>
+    <string name="icon_description">Icon of Stalk Trade</string>
 </resources>

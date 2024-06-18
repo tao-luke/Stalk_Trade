@@ -15,7 +15,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.example.stalk.R
 import com.example.stalk.databinding.FragmentSearchBinding
 import com.example.stalk.ui.viewmodel.NameViewModel
 import com.example.stalk.ui.viewmodel.SearchViewModel
@@ -79,7 +78,7 @@ class SearchFragment : Fragment() {
                 }
             } else {
                 // Handle case where the name is not in the correct format
-                Toast.makeText(requireContext(), "Please enter a valid name", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Please enter a valid first and last name", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -95,7 +94,7 @@ class SearchFragment : Fragment() {
         })
 
         // Set an OnEditorActionListener to trigger the search button click when "Enter" is pressed
-        binding.searchEditText.setOnEditorActionListener(TextView.OnEditorActionListener { v, actionId, event ->
+        binding.searchEditText.setOnEditorActionListener(TextView.OnEditorActionListener { _, _, event ->
             if (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER) {
                 binding.buttonSearch.performClick()
                 return@OnEditorActionListener true
