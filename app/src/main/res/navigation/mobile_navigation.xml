@@ -20,8 +20,10 @@
             app:destination="@id/politicianFragment">
             <argument
                 android:name="politicianName"
-                app:argType="string"
-                app:nullable="false" />
+                app:argType="string" />
+            <argument
+                android:name="politicianImage"
+                app:argType="string" />
         </action>
     </fragment>
 
@@ -38,8 +40,10 @@
         tools:layout="@layout/fragment_politician">
         <argument
             android:name="politicianName"
-            app:argType="string"
-            app:nullable="false" />
+            app:argType="string" />
+        <argument
+            android:name="politicianImage"
+            app:argType="string" />
     </fragment>
 
     <fragment

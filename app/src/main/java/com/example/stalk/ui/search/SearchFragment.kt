@@ -63,20 +63,20 @@ class SearchFragment : Fragment() {
                 val firstName = nameParts[0]
                 val lastName = nameParts[1]
 
-                // Fetch politician by name
-                tradeViewModel.fetchRecentTradesByName(firstName, lastName, 10)
+                // Find the politician by name
+                val politician = nameViewModel.names.value?.find { it.firstName == firstName && it.lastName == lastName }
 
-                // Observe the politician and navigate once they are fetched
-                tradeViewModel.trades.observe(viewLifecycleOwner, Observer { trades ->
-                    if (trades.isNotEmpty()) {
-                        // Navigate to PoliticianFragment with the name as an argument
-                        val action = SearchFragmentDirections.actionSearchFragmentToPoliticianFragment(searchName)
-                        findNavController().navigate(action)
-                    } else {
-                        // Handle case when there are no trades available
-                        Toast.makeText(requireContext(), "No recent trades available", Toast.LENGTH_SHORT).show()
-                    }
-                })
+                if (politician != null) {
+                    // Fetch trades for the given name
+                    tradeViewModel.fetchRecentTradesByName(firstName, lastName, 10)
+
+                    // Navigate to PoliticianFragment with the name and image URL as arguments
+                    val action = SearchFragmentDirections.actionSearchFragmentToPoliticianFragment(politician.firstName + " " + politician.lastName, politician.img)
+                    findNavController().navigate(action)
+                } else {
+                    // Handle case when no matching politician is found
+                    Toast.makeText(requireContext(), "Politician not found", Toast.LENGTH_SHORT).show()
+                }
             } else {
                 // Handle case where the name is not in the correct format
                 Toast.makeText(requireContext(), "Please enter a valid name", Toast.LENGTH_SHORT).show()
@@ -102,7 +102,6 @@ class SearchFragment : Fragment() {
             }
             false
         })
-        // TODO! we need to add a char limit on the search box!
         return root
     }
 

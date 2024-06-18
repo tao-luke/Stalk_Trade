@@ -7,6 +7,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import androidx.navigation.fragment.findNavController
 import com.example.stalk.R
 import com.example.stalk.databinding.FragmentPoliticianBinding
@@ -37,13 +38,19 @@ class PoliticianFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Display the politician name at the top
+        // Display the politician name and image at the top
         val politicianName = args.politicianName
+        val politicianImage = args.politicianImage
         binding.textViewPoliticianName.text = politicianName
+
+        // Load the image using Glide
+        Glide.with(this)
+            .load(politicianImage)
+            .into(binding.politicianPicture)
 
         binding.notificationBell.setOnClickListener {
             // Handle notification bell click
-            //findNavController().navigate(R.id.navigation_saved)
+            findNavController().navigate(R.id.navigation_saved)
         }
 
         // Initialize RecyclerView
