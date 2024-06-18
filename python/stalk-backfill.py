@@ -159,10 +159,27 @@ def disclosure_backfill(collection):
         upload_names_to_firestore(parsed_data)
         print("Page ", i, " complete")
 
+def update(collection):
+    data = fetch_data_senate_disclosure(0)
+    parsed_data = parse_senate_disclosure(data)
+    upload_trade_data_to_firestore(parsed_data, collection)
+    upload_names_to_firestore(parsed_data)
+
+    print("Disclosure update complete")
+
+    data = fetch_data_senate_trading(0)
+    parsed_data = parse_senate_trading(data)
+    upload_trade_data_to_firestore(parsed_data, collection)
+    upload_names_to_firestore(parsed_data)
+
+    print("Trading update complete")
+
+    delete_old_entries(collection)
+
+    print("Update complete")
 
 def main():
-      
-    
+    update("all_trades")
 
 if __name__ == "__main__":
     main()
