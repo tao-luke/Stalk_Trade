@@ -9,11 +9,11 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.stalk.R
-import com.example.stalk.model.Name
+import com.example.stalk.model.SavedPolitician
 
 class SavedPoliticianAdapter(
-    private var politicians: List<Name>,
-    private val onProfileButtonClick: (Name) -> Unit
+    private var politicians: List<SavedPolitician>,
+    private val onProfileButtonClick: (SavedPolitician) -> Unit
 ) : RecyclerView.Adapter<SavedPoliticianAdapter.PoliticianViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PoliticianViewHolder {
@@ -29,8 +29,8 @@ class SavedPoliticianAdapter(
 
     override fun getItemCount(): Int = politicians.size
 
-    fun updatePoliticians(newPoliticians: List<Name>) {
-        politicians = newPoliticians
+    fun updatePoliticians(newPoliticians: List<SavedPolitician>) {
+        this.politicians = newPoliticians
         notifyDataSetChanged()
     }
 
@@ -39,11 +39,10 @@ class SavedPoliticianAdapter(
         private val politicianName: TextView = itemView.findViewById(R.id.politician_name)
         private val viewProfileButton: Button = itemView.findViewById(R.id.view_profile_button)
 
-        fun bind(politician: Name, onProfileButtonClick: (Name) -> Unit) {
-            politicianName.text = "${politician.firstName} ${politician.lastName}"
+        fun bind(politician: SavedPolitician, onProfileButtonClick: (SavedPolitician) -> Unit) {
+            politicianName.text = politician.name
             Glide.with(itemView.context)
-                .load(politician.img)
-                .error(R.drawable.ic_profile_placeholder)
+                .load(politician.profilePictureUrl)
                 .into(profilePicture)
             viewProfileButton.setOnClickListener {
                 onProfileButtonClick(politician)

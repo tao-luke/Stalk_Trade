@@ -17,6 +17,7 @@ import com.example.stalk.model.Name
 import com.example.stalk.ui.overviewTable.TableAdapter
 import com.example.stalk.ui.overviewTable.TableRowData
 import com.example.stalk.ui.saved.SavedViewModel
+import com.example.stalk.model.SavedPolitician
 import com.example.stalk.ui.viewmodel.TradeViewModel
 import com.example.stalk.model.Trade
 
@@ -63,10 +64,14 @@ class PoliticianFragment : Fragment() {
 
         binding.notificationBell.setOnClickListener {
             politicianViewModel.toggleNotification()
+            val savedPolitician = SavedPolitician(
+                name = politicianName,
+                profilePictureUrl = politicianImage
+            )
             if (politician.isNotified) {
-                savedViewModel.addPolitician(politician)
+                savedViewModel.addPolitician(savedPolitician)
             } else {
-                savedViewModel.removePolitician(politician)
+                savedViewModel.removePolitician(savedPolitician)
             }
         }
 

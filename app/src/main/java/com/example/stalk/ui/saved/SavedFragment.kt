@@ -9,7 +9,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.stalk.databinding.FragmentSavedBinding
-import com.example.stalk.model.Name
 
 class SavedFragment : Fragment() {
 
