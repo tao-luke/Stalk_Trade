@@ -16,6 +16,7 @@ import com.example.stalk.databinding.FragmentPoliticianBinding
 import com.example.stalk.model.Name
 import com.example.stalk.ui.overviewTable.TableAdapter
 import com.example.stalk.ui.overviewTable.TableRowData
+import com.example.stalk.ui.saved.SavedViewModel
 import com.example.stalk.ui.viewmodel.TradeViewModel
 import com.example.stalk.model.Trade
 
@@ -25,6 +26,7 @@ class PoliticianFragment : Fragment() {
     private val binding get() = _binding!!
     private val tradeViewModel: TradeViewModel by activityViewModels()
     private val politicianViewModel: PoliticianViewModel by activityViewModels()
+    private val savedViewModel: SavedViewModel by activityViewModels()
     private lateinit var tableRecyclerView: RecyclerView
     private lateinit var tableAdapter: TableAdapter
     private var tableData: MutableList<TableRowData> = mutableListOf()
@@ -61,6 +63,11 @@ class PoliticianFragment : Fragment() {
 
         binding.notificationBell.setOnClickListener {
             politicianViewModel.toggleNotification()
+            if (politician.isNotified) {
+                savedViewModel.addPolitician(politician)
+            } else {
+                savedViewModel.removePolitician(politician)
+            }
         }
 
         politicianViewModel.politician.observe(viewLifecycleOwner) { updatedPolitician ->
