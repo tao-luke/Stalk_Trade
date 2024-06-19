@@ -21,7 +21,7 @@ import com.example.stalk.ui.saved.SavedViewModel
 import com.example.stalk.ui.viewmodel.TradeViewModel
 import com.example.stalk.model.Trade
 
-class PoliticianFragment : Fragment() {
+class PoliticianFragment : Fragment(), TableAdapter.OnItemClickListener  {
 
     private var _binding: FragmentPoliticianBinding? = null
     private val binding get() = _binding!!
@@ -87,7 +87,7 @@ class PoliticianFragment : Fragment() {
         tableRecyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         // Initialize and set adapter
-        tableAdapter = TableAdapter(tableData)
+        tableAdapter = TableAdapter(tableData,this)
         tableRecyclerView.adapter = tableAdapter
 
         // Fetch and observe the trades for the politician
@@ -134,5 +134,9 @@ class PoliticianFragment : Fragment() {
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun onItemClick(trade: TableRowData) {
+
     }
 }

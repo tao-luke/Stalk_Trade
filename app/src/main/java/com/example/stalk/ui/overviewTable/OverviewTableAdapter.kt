@@ -16,8 +16,12 @@ data class TableRowData(
     // Add more properties for additional columns if needed
 )
 
-class TableAdapter(private val tableData: List<TableRowData>) :
+class TableAdapter(private val tableData: List<TableRowData>, private val itemClickListener: OnItemClickListener) :
     RecyclerView.Adapter<TableAdapter.ViewHolder>() {
+
+    interface OnItemClickListener {
+        fun onItemClick(trade: TableRowData)
+    }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val dateTextView: TextView = itemView.findViewById(R.id.dateCol)
@@ -26,6 +30,14 @@ class TableAdapter(private val tableData: List<TableRowData>) :
         val amountTextView: TextView = itemView.findViewById(R.id.amountCol)
         val nameTextView: TextView = itemView.findViewById(R.id.nameCol)
         // Add more TextViews or other views for additional columns if needed
+        fun bind(trade: TableRowData, clickListener: OnItemClickListener) {
+            dateTextView.text = trade.column1
+            tickerTextView.text = trade.column2
+            typeTextView.text = trade.column3
+            amountTextView.text = trade.column4
+            nameTextView.text = trade.column5
+            itemView.setOnClickListener { clickListener.onItemClick(trade) }
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -34,12 +46,7 @@ class TableAdapter(private val tableData: List<TableRowData>) :
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val rowData = tableData[position]
-        holder.dateTextView.text = rowData.column1
-        holder.tickerTextView.text = rowData.column2
-        holder.typeTextView.text = rowData.column3
-        holder.amountTextView.text = rowData.column4
-        holder.nameTextView.text = rowData.column5
+        holder.bind(tableData[position], itemClickListener)
         // Bind data to additional views for additional columns if needed
     }
 
