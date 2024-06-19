@@ -124,7 +124,12 @@ class PoliticianFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {
-                findNavController().navigate(R.id.navigation_search) // Navigate back to SearchFragment
+                val sourceFragment = args.sourceFragment
+                when (sourceFragment) {
+                    "search" -> findNavController().navigate(R.id.navigation_search)
+                    "saved" -> findNavController().navigate(R.id.navigation_saved)
+                    else -> findNavController().navigate(R.id.navigation_search)
+                }
                 true
             }
             else -> super.onOptionsItemSelected(item)

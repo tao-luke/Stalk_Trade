@@ -24,6 +24,9 @@
             <argument
                 android:name="politicianImage"
                 app:argType="string" />
+            <argument
+                android:name="sourceFragment"
+                app:argType="string" />
         </action>
     </fragment>
 
@@ -44,6 +47,9 @@
         <argument
             android:name="politicianImage"
             app:argType="string" />
+        <argument
+            android:name="sourceFragment"
+            app:argType="string" />
     </fragment>
 
     <fragment
@@ -59,6 +65,9 @@
                 app:argType="string" />
             <argument
                 android:name="politicianImage"
+                app:argType="string" />
+            <argument
+                android:name="sourceFragment"
                 app:argType="string" />
         </action>
     </fragment>

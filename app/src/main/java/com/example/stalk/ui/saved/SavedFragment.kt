@@ -45,7 +45,8 @@ class SavedFragment : Fragment() {
     private fun navigateToPoliticianFragment(politician: SavedPolitician) {
         val action = SavedFragmentDirections.actionNavigationSavedToPoliticianFragment(
             politician.name,
-            politician.profilePictureUrl
+            politician.profilePictureUrl,
+            "saved"
         )
         findNavController().navigate(action)
     }
