@@ -3,30 +3,21 @@ package com.example.stalk.ui.politician
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.stalk.model.Name
 
 class PoliticianViewModel : ViewModel() {
 
-    private val _tradeHistory = MutableLiveData<List<TradeHistoryItem>>()
-    val tradeHistory: LiveData<List<TradeHistoryItem>> get() = _tradeHistory
+    private val _politician = MutableLiveData<Name>()
+    val politician: LiveData<Name> get() = _politician
 
-    fun updateTradeHistory(newTradeHistory: List<TradeHistoryItem>) {
-        _tradeHistory.value = newTradeHistory
+    fun setPolitician(politician: Name) {
+        _politician.value = politician
     }
 
-    init {
-        // Load initial trade history data
-        loadTradeHistory()
-    }
-
-    private fun loadTradeHistory() {
-        // Mock data
-        val sampleTradeHistory = listOf(
-            TradeHistoryItem("2024-06-01", "Bought 100 shares of XYZ"),
-            TradeHistoryItem("2024-05-15", "Sold 50 shares of ABC"),
-            // Add more items as needed
-        )
-        _tradeHistory.value = sampleTradeHistory
+    fun toggleNotification() {
+        _politician.value?.let {
+            it.isNotified = !it.isNotified
+            _politician.value = it
+        }
     }
 }
-
-data class TradeHistoryItem(val date: String, val description: String)

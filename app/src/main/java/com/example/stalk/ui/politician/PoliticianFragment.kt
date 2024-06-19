@@ -13,6 +13,7 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.stalk.R
 import com.example.stalk.databinding.FragmentPoliticianBinding
+import com.example.stalk.model.Name
 import com.example.stalk.ui.overviewTable.TableAdapter
 import com.example.stalk.ui.overviewTable.TableRowData
 import com.example.stalk.ui.viewmodel.TradeViewModel
@@ -23,6 +24,7 @@ class PoliticianFragment : Fragment() {
     private var _binding: FragmentPoliticianBinding? = null
     private val binding get() = _binding!!
     private val tradeViewModel: TradeViewModel by activityViewModels()
+    private val politicianViewModel: PoliticianViewModel by activityViewModels()
     private lateinit var tableRecyclerView: RecyclerView
     private lateinit var tableAdapter: TableAdapter
     private var tableData: MutableList<TableRowData> = mutableListOf()
@@ -45,6 +47,9 @@ class PoliticianFragment : Fragment() {
         val politicianImage = args.politicianImage
         val nameParts = politicianName.split(" ")
 
+        val politician = Name(nameParts[0], nameParts[1], politicianImage)
+        politicianViewModel.setPolitician(politician)
+
         binding.textViewPoliticianName.text = politicianName
 
         // Load the image using Glide with error handling and transformations
@@ -55,7 +60,11 @@ class PoliticianFragment : Fragment() {
             .into(binding.politicianPicture)
 
         binding.notificationBell.setOnClickListener {
-            // Handle notification bell click
+            politicianViewModel.toggleNotification()
+        }
+
+        politicianViewModel.politician.observe(viewLifecycleOwner) { updatedPolitician ->
+            updateNotificationIcon(updatedPolitician.isNotified)
         }
 
         // Initialize RecyclerView
@@ -73,6 +82,14 @@ class PoliticianFragment : Fragment() {
 
         tradeViewModel.trades.observe(viewLifecycleOwner) { tradeHistory ->
             updateTradeHistoryTable(tradeHistory)
+        }
+    }
+
+    private fun updateNotificationIcon(isNotified: Boolean) {
+        if (isNotified) {
+            binding.notificationBell.setImageResource(R.drawable.ic_bell_on)
+        } else {
+            binding.notificationBell.setImageResource(R.drawable.ic_bell_off)
         }
     }
 
