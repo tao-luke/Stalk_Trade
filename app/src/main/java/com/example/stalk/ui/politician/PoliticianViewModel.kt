@@ -5,7 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.stalk.model.Name
-import com.example.stalk.ui.saved.PreferenceHelper
+import com.example.stalk.util.PreferenceHelper
 
 class PoliticianViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -15,6 +15,7 @@ class PoliticianViewModel(application: Application) : AndroidViewModel(applicati
     private val prefs = PreferenceHelper(application)
 
     fun setPolitician(politician: Name) {
+        // Check the notification state from SharedPreferences
         politician.isNotified = prefs.getNotificationState(politician.firstName + politician.lastName)
         _politician.value = politician
     }

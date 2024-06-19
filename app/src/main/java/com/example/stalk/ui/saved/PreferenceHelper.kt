@@ -1,4 +1,4 @@
-package com.example.stalk.ui.saved
+package com.example.stalk.util
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -9,7 +9,7 @@ class PreferenceHelper(context: Context) {
 
     companion object {
         private const val PREFS_NAME = "stalk_prefs"
-        private const val KEY_NOTIFICATION_STATE = "notification_state"
+        private const val KEY_NOTIFICATION_STATE = "notification_state_"
     }
 
     fun setNotificationState(politicianName: String, state: Boolean) {
