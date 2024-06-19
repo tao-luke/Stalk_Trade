@@ -54,7 +54,7 @@ class SearchFragment : Fragment() {
         // Fetch names from the repository
         nameViewModel.fetchNames()
 
-        // Handling the original search button click
+        // Handling the search button click
         binding.buttonSearch.setOnClickListener {
             val searchName = binding.searchEditText.text.toString()
             val nameParts = searchName.split(" ", limit = 2)
@@ -69,8 +69,12 @@ class SearchFragment : Fragment() {
                     // Fetch trades for the given name
                     tradeViewModel.fetchRecentTradesByName(firstName, lastName, 10)
 
-                    // Navigate to PoliticianFragment with the name and image URL as arguments
-                    val action = SearchFragmentDirections.actionSearchFragmentToPoliticianFragment(politician.firstName + " " + politician.lastName, politician.img)
+                    // Navigate to PoliticianFragment with the name, image URL, and source fragment as arguments
+                    val action = SearchFragmentDirections.actionSearchFragmentToPoliticianFragment(
+                        politician.firstName + " " + politician.lastName,
+                        politician.img,
+                        "search"
+                    )
                     findNavController().navigate(action)
                 } else {
                     // Handle case when no matching politician is found

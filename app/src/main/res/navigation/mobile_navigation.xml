@@ -24,6 +24,9 @@
             <argument
                 android:name="politicianImage"
                 app:argType="string" />
+            <argument
+                android:name="sourceFragment"
+                app:argType="string" />
         </action>
     </fragment>
 
@@ -44,11 +47,28 @@
         <argument
             android:name="politicianImage"
             app:argType="string" />
+        <argument
+            android:name="sourceFragment"
+            app:argType="string" />
     </fragment>
 
     <fragment
         android:id="@+id/navigation_saved"
         android:name="com.example.stalk.ui.saved.SavedFragment"
         android:label="@string/title_saved"
-        tools:layout="@layout/fragment_saved" />
+        tools:layout="@layout/fragment_saved">
+        <action
+            android:id="@+id/action_navigationSaved_to_politicianFragment"
+            app:destination="@id/politicianFragment">
+            <argument
+                android:name="politicianName"
+                app:argType="string" />
+            <argument
+                android:name="politicianImage"
+                app:argType="string" />
+            <argument
+                android:name="sourceFragment"
+                app:argType="string" />
+        </action>
+    </fragment>
 </navigation>
