@@ -7,17 +7,13 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.stalk.R
-
-data class Politician(
-    val name: String,
-    val profilePictureResId: Int,
-    val recentTrade: String
-)
+import com.example.stalk.model.SavedPolitician
 
 class SavedPoliticianAdapter(
-    private val politicians: List<Politician>,
-    private val onProfileButtonClick: (Politician) -> Unit
+    private var politicians: List<SavedPolitician>,
+    private val onProfileButtonClick: (SavedPolitician) -> Unit
 ) : RecyclerView.Adapter<SavedPoliticianAdapter.PoliticianViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PoliticianViewHolder {
@@ -33,16 +29,21 @@ class SavedPoliticianAdapter(
 
     override fun getItemCount(): Int = politicians.size
 
+    fun updatePoliticians(newPoliticians: List<SavedPolitician>) {
+        this.politicians = newPoliticians
+        notifyDataSetChanged()
+    }
+
     class PoliticianViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val profilePicture: ImageView = itemView.findViewById(R.id.profile_picture)
         private val politicianName: TextView = itemView.findViewById(R.id.politician_name)
-        private val recentTrade: TextView = itemView.findViewById(R.id.recent_trade)
         private val viewProfileButton: Button = itemView.findViewById(R.id.view_profile_button)
 
-        fun bind(politician: Politician, onProfileButtonClick: (Politician) -> Unit) {
+        fun bind(politician: SavedPolitician, onProfileButtonClick: (SavedPolitician) -> Unit) {
             politicianName.text = politician.name
-            profilePicture.setImageResource(politician.profilePictureResId)
-            recentTrade.text = politician.recentTrade
+            Glide.with(itemView.context)
+                .load(politician.profilePictureUrl)
+                .into(profilePicture)
             viewProfileButton.setOnClickListener {
                 onProfileButtonClick(politician)
             }

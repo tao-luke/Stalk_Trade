@@ -1,32 +1,31 @@
 package com.example.stalk.ui.politician
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import com.example.stalk.model.Name
+import com.example.stalk.util.PreferenceHelper
 
-class PoliticianViewModel : ViewModel() {
+class PoliticianViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val _tradeHistory = MutableLiveData<List<TradeHistoryItem>>()
-    val tradeHistory: LiveData<List<TradeHistoryItem>> get() = _tradeHistory
+    private val _politician = MutableLiveData<Name>()
+    val politician: LiveData<Name> get() = _politician
 
-    fun updateTradeHistory(newTradeHistory: List<TradeHistoryItem>) {
-        _tradeHistory.value = newTradeHistory
+    private val prefs = PreferenceHelper(application)
+
+    fun setPolitician(politician: Name) {
+        val fullName = politician.firstName + politician.lastName
+        politician.isNotified = prefs.getNotificationState(fullName)
+        _politician.value = politician
     }
 
-    init {
-        // Load initial trade history data
-        loadTradeHistory()
-    }
-
-    private fun loadTradeHistory() {
-        // Mock data
-        val sampleTradeHistory = listOf(
-            TradeHistoryItem("2024-06-01", "Bought 100 shares of XYZ"),
-            TradeHistoryItem("2024-05-15", "Sold 50 shares of ABC"),
-            // Add more items as needed
-        )
-        _tradeHistory.value = sampleTradeHistory
+    fun toggleNotification() {
+        _politician.value?.let {
+            it.isNotified = !it.isNotified
+            val fullName = it.firstName + it.lastName
+            prefs.setNotificationState(fullName, it.isNotified)
+            _politician.value = it
+        }
     }
 }
-
-data class TradeHistoryItem(val date: String, val description: String)
