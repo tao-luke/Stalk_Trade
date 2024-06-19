@@ -14,10 +14,10 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.stalk.R
 import com.example.stalk.databinding.FragmentPoliticianBinding
 import com.example.stalk.model.Name
+import com.example.stalk.model.SavedPolitician
 import com.example.stalk.ui.overviewTable.TableAdapter
 import com.example.stalk.ui.overviewTable.TableRowData
 import com.example.stalk.ui.saved.SavedViewModel
-import com.example.stalk.model.SavedPolitician
 import com.example.stalk.ui.viewmodel.TradeViewModel
 import com.example.stalk.model.Trade
 
@@ -61,6 +61,9 @@ class PoliticianFragment : Fragment() {
             .transform(CenterCrop(), RoundedCorners(20))
             .error(R.drawable.sample_politician) // Specify the default image resource here
             .into(binding.politicianPicture)
+
+        // Set the initial state of the bell icon
+        updateNotificationIcon(politician.isNotified)
 
         binding.notificationBell.setOnClickListener {
             politicianViewModel.toggleNotification()

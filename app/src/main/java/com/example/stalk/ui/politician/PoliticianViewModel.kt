@@ -15,15 +15,16 @@ class PoliticianViewModel(application: Application) : AndroidViewModel(applicati
     private val prefs = PreferenceHelper(application)
 
     fun setPolitician(politician: Name) {
-        // Check the notification state from SharedPreferences
-        politician.isNotified = prefs.getNotificationState(politician.firstName + politician.lastName)
+        val fullName = politician.firstName + politician.lastName
+        politician.isNotified = prefs.getNotificationState(fullName)
         _politician.value = politician
     }
 
     fun toggleNotification() {
         _politician.value?.let {
             it.isNotified = !it.isNotified
-            prefs.setNotificationState(it.firstName + it.lastName, it.isNotified)
+            val fullName = it.firstName + it.lastName
+            prefs.setNotificationState(fullName, it.isNotified)
             _politician.value = it
         }
     }
