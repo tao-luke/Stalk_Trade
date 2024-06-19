@@ -12,7 +12,7 @@ import com.example.stalk.databinding.FragmentPoliticianBinding
 import com.example.stalk.ui.overviewTable.TableAdapter
 import com.example.stalk.ui.overviewTable.TableRowData
 
-class PoliticianFragment : Fragment() {
+class PoliticianFragment : Fragment(), TableAdapter.OnItemClickListener  {
 
     private var _binding: FragmentPoliticianBinding? = null
     private val binding get() = _binding!!
@@ -54,7 +54,7 @@ class PoliticianFragment : Fragment() {
         tableData.add(TableRowData("2024-04-23", "AAPL", "Sale", "$1,001 - $15,000", "Shelley M Capito"))
 
         // Initialize and set adapter
-        tableAdapter = TableAdapter(tableData)
+        tableAdapter = TableAdapter(tableData,this)
         tableRecyclerView.adapter = tableAdapter
 
         // Update the adapter with the sample data
@@ -80,5 +80,9 @@ class PoliticianFragment : Fragment() {
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun onItemClick(trade: TableRowData) {
+
     }
 }
