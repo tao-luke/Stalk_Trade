@@ -41,8 +41,10 @@ class SavedPoliticianAdapter(
 
         fun bind(politician: SavedPolitician, onProfileButtonClick: (SavedPolitician) -> Unit) {
             politicianName.text = politician.name
+            // Assume profilePictureUrl is a URL to the image
             Glide.with(itemView.context)
                 .load(politician.profilePictureUrl)
+                .placeholder(R.drawable.ic_profile_placeholder) // Replace with your placeholder
                 .into(profilePicture)
             viewProfileButton.setOnClickListener {
                 onProfileButtonClick(politician)
