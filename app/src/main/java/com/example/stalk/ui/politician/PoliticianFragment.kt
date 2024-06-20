@@ -111,8 +111,10 @@ class PoliticianFragment : Fragment(), TableAdapter.OnItemClickListener  {
 
     private fun updateTradeHistoryTable(tradeHistory: List<Trade>) {
         tableData.clear()
+        tradeData.clear()
         tradeHistory.forEach { trade ->
             tableData.add(TableRowData(trade.transactionDate, trade.ticker, trade.type, trade.amount, trade.owner))
+            tradeData.add(trade)
         }
         tableAdapter.notifyDataSetChanged()
     }
