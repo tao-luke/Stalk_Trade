@@ -38,7 +38,11 @@
         android:id="@+id/transactionDetailsFragment"
         android:name="com.example.stalk.ui.details.TransactionDetailsFragment"
         android:label="@string/title_transaction_details"
-        tools:layout="@layout/fragment_transaction_details" />
+        tools:layout="@layout/fragment_transaction_details">
+        <argument
+            android:name="trade"
+            app:argType="com.example.stalk.model.Trade" />
+    </fragment>
 
     <fragment
         android:id="@+id/politicianFragment"

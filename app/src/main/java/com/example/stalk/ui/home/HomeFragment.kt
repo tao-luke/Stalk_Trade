@@ -18,6 +18,7 @@ import androidx.fragment.app.activityViewModels
 import com.example.stalk.ui.viewmodel.TradeViewModel
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import com.example.stalk.model.Trade
 
 class HomeFragment : Fragment(), TableAdapter.OnItemClickListener {
 
@@ -29,6 +30,7 @@ class HomeFragment : Fragment(), TableAdapter.OnItemClickListener {
     private lateinit var tableRecyclerView: RecyclerView
     private lateinit var tableAdapter: TableAdapter
     private var tableData: MutableList<TableRowData> = mutableListOf()
+    private var tradeData: MutableList<Trade> = mutableListOf()
     private val tradeViewModel: TradeViewModel by activityViewModels()
     private lateinit var progressBar: ProgressBar
 
@@ -62,7 +64,7 @@ class HomeFragment : Fragment(), TableAdapter.OnItemClickListener {
         tableRecyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         // Initialize and set adapter
-        tableAdapter = TableAdapter(tableData, this)
+        tableAdapter = TableAdapter(tableData, tradeData, this)
         tableRecyclerView.adapter = tableAdapter
 
         progressBar.visibility = View.VISIBLE
@@ -72,18 +74,16 @@ class HomeFragment : Fragment(), TableAdapter.OnItemClickListener {
             // Update the UI with the list of trades
             trades?.let {
                 tableData.clear()
+                tradeData.clear()
                 for (trade in it) {
                     tableData.add(TableRowData(trade.transactionDate, trade.ticker, trade.type, trade.amount,trade.firstName + " " + trade.lastName))
+                    tradeData.add(trade);
                 }
                 tableAdapter.notifyDataSetChanged()
                 progressBar.visibility = View.GONE
             }
+
         })
-//        tableData.add(TableRowData("2024-04-23", "AAPL", "Sale", "$1,001 - $15,000", "Shelley M Capito"))
-//        tableData.add(TableRowData("2024-03-12", "AAPL", "Sale (Full)", "$15,001 - $50,000", "Tommy Tuberville"))
-//        tableData.add(TableRowData("2024-04-23", "AAPL", "Sale", "$1,001 - $15,000", "Shelley M Capito"))
-//        tableData.add(TableRowData("2024-03-12", "AAPL", "Sale (Full)", "$15,001 - $50,000", "Tommy Tuberville"))
-//        tableData.add(TableRowData("2024-04-23", "AAPL", "Sale", "$1,001 - $15,000", "Shelley M Capito"))
 
         // Fetch recent trades
         tradeViewModel.fetchRecentTrades(10)
@@ -93,8 +93,8 @@ class HomeFragment : Fragment(), TableAdapter.OnItemClickListener {
         _binding = null
     }
 
-    override fun onItemClick(trade: TableRowData) {
-        val action = HomeFragmentDirections.actionHomeFragmentToTransactionDetailsFragment()
+    override fun onItemClick(trade: Trade) {
+        val action = HomeFragmentDirections.actionHomeFragmentToTransactionDetailsFragment(trade)
         findNavController().navigate(action)
     }
 }
