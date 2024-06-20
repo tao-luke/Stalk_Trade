@@ -29,9 +29,17 @@ class PreferenceHelper(context: Context) {
 
     fun getSavedPoliticians(): List<SavedPolitician> {
         val serializedList = preferences.getString(KEY_SAVED_POLITICIANS, null) ?: return emptyList()
-        return serializedList.split("|").map {
+        if (serializedList.isEmpty()) {
+            return emptyList()
+        }
+        return serializedList.split("|").mapNotNull {
             val parts = it.split(",")
-            SavedPolitician(parts[0], parts[1])
+            if (parts.size == 2) {
+                SavedPolitician(parts[0], parts[1])
+            } else {
+                null  // Skip improperly formatted entries
+            }
         }
     }
+
 }
