@@ -88,7 +88,7 @@ class PoliticianFragment : Fragment(), TableAdapter.OnItemClickListener  {
         tableRecyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         // Initialize and set adapter
-        tableAdapter = TableAdapter(tableData, tradeData,this)
+        tableAdapter = TableAdapter(tradeData, this)
         tableRecyclerView.adapter = tableAdapter
 
         // Fetch and observe the trades for the politician

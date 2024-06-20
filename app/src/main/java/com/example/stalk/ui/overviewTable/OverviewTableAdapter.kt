@@ -17,7 +17,7 @@ data class TableRowData(
     // Add more properties for additional columns if needed
 )
 
-class TableAdapter(private val tableData: List<TableRowData>, private val tradeData: List<Trade>, private val itemClickListener: OnItemClickListener) :
+class TableAdapter(private val tradeData: List<Trade>, private val itemClickListener: OnItemClickListener) :
     RecyclerView.Adapter<TableAdapter.ViewHolder>() {
 
     interface OnItemClickListener {
@@ -31,12 +31,12 @@ class TableAdapter(private val tableData: List<TableRowData>, private val tradeD
         val amountTextView: TextView = itemView.findViewById(R.id.amountCol)
         val nameTextView: TextView = itemView.findViewById(R.id.nameCol)
         // Add more TextViews or other views for additional columns if needed
-        fun bind(trade: TableRowData, tradeData: Trade, clickListener: OnItemClickListener) {
-            dateTextView.text = trade.column1
-            tickerTextView.text = trade.column2
-            typeTextView.text = trade.column3
-            amountTextView.text = trade.column4
-            nameTextView.text = trade.column5
+        fun bind(tradeData: Trade, clickListener: OnItemClickListener) {
+            dateTextView.text = tradeData.transactionDate
+            tickerTextView.text = tradeData.ticker
+            typeTextView.text = tradeData.type
+            amountTextView.text = tradeData.amount
+            nameTextView.text = tradeData.firstName + " " + tradeData.lastName
             itemView.setOnClickListener { clickListener.onItemClick(tradeData) }
         }
     }
@@ -47,11 +47,11 @@ class TableAdapter(private val tableData: List<TableRowData>, private val tradeD
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(tableData[position], tradeData[position], itemClickListener)
+        holder.bind(tradeData[position], itemClickListener)
         // Bind data to additional views for additional columns if needed
     }
 
     override fun getItemCount(): Int {
-        return tableData.size
+        return tradeData.size
     }
 }
