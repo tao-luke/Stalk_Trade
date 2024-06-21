@@ -1,4 +1,8 @@
 package com.example.stalk.model
+
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+@Parcelize
 data class Trade(
     val firstName: String = "",
     val lastName: String = "",
@@ -10,7 +14,7 @@ data class Trade(
     val type: String = "",
     val amount: String = "",
     val ticker: String = ""
-) {
+) : Parcelable {
     // No-argument constructor
     constructor() : this("", "", "", "", "", "", "", "", "", "")
 }

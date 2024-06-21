@@ -31,6 +31,7 @@ class PoliticianFragment : Fragment(), TableAdapter.OnItemClickListener  {
     private lateinit var tableRecyclerView: RecyclerView
     private lateinit var tableAdapter: TableAdapter
     private var tableData: MutableList<TableRowData> = mutableListOf()
+    private var tradeData: MutableList<Trade> = mutableListOf()
     private val args: PoliticianFragmentArgs by navArgs()
 
     override fun onCreateView(
@@ -87,7 +88,7 @@ class PoliticianFragment : Fragment(), TableAdapter.OnItemClickListener  {
         tableRecyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         // Initialize and set adapter
-        tableAdapter = TableAdapter(tableData,this)
+        tableAdapter = TableAdapter(tradeData, this)
         tableRecyclerView.adapter = tableAdapter
 
         // Fetch and observe the trades for the politician
@@ -110,8 +111,10 @@ class PoliticianFragment : Fragment(), TableAdapter.OnItemClickListener  {
 
     private fun updateTradeHistoryTable(tradeHistory: List<Trade>) {
         tableData.clear()
+        tradeData.clear()
         tradeHistory.forEach { trade ->
             tableData.add(TableRowData(trade.transactionDate, trade.ticker, trade.type, trade.amount, trade.owner))
+            tradeData.add(trade)
         }
         tableAdapter.notifyDataSetChanged()
     }
@@ -136,7 +139,7 @@ class PoliticianFragment : Fragment(), TableAdapter.OnItemClickListener  {
         }
     }
 
-    override fun onItemClick(trade: TableRowData) {
+    override fun onItemClick(trade: Trade) {
 
     }
 }
