@@ -159,6 +159,24 @@ def disclosure_backfill(collection):
         upload_names_to_firestore(parsed_data)
         print("Page ", i, " complete")
 
+def remove_unused_names():
+    db = firestore.client()
+    names_collection_ref = db.collection("names")
+    all_trades_collection_ref = db.collection("all_trades")
+    
+    names_docs = names_collection_ref.stream()
+    
+    for name_doc in names_docs:
+        name_data = name_doc.to_dict()
+        first_name = name_data.get("firstName")
+        last_name = name_data.get("lastName")
+        
+        trades_query = all_trades_collection_ref.where("firstName", "==", first_name).where("lastName", "==", last_name).limit(1).get()
+        
+        if len(trades_query) == 0:
+            print(f"Deleting unused name: {first_name} {last_name}")
+            names_collection_ref.document(name_doc.id).delete()
+
 def update(collection):
     data = fetch_data_senate_disclosure(0)
     parsed_data = parse_senate_disclosure(data)
@@ -175,6 +193,8 @@ def update(collection):
     print("Trading update complete")
 
     delete_old_entries(collection)
+
+    remove_unused_names()
 
     print("Update complete")
 
