@@ -29,10 +29,10 @@ class HomeFragment : Fragment(), TableAdapter.OnItemClickListener {
     private val binding get() = _binding!!
     private lateinit var tableRecyclerView: RecyclerView
     private lateinit var tableAdapter: TableAdapter
-    private var tableData: MutableList<TableRowData> = mutableListOf()
     private var tradeData: MutableList<Trade> = mutableListOf()
     private val tradeViewModel: TradeViewModel by activityViewModels()
     private lateinit var progressBar: ProgressBar
+    private var fetched: Boolean = false
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -57,36 +57,39 @@ class HomeFragment : Fragment(), TableAdapter.OnItemClickListener {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
         super.onViewCreated(view, savedInstanceState)
+
+        progressBar.visibility = View.VISIBLE
 
         // Initialize RecyclerView
         tableRecyclerView = binding.tableRecyclerView
         tableRecyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         // Initialize and set adapter
-        tableAdapter = TableAdapter(tableData, tradeData, this)
+        tableAdapter = TableAdapter(tradeData, this)
         tableRecyclerView.adapter = tableAdapter
 
-        progressBar.visibility = View.VISIBLE
+        // Fetch recent trades
+        tradeViewModel.fetchRecentTrades(10)
+        fetched = true;
 
         // Prepare table data
         tradeViewModel.trades.observe(this, Observer { trades ->
             // Update the UI with the list of trades
             trades?.let {
-                tableData.clear()
                 tradeData.clear()
                 for (trade in it) {
-                    tableData.add(TableRowData(trade.transactionDate, trade.ticker, trade.type, trade.amount,trade.firstName + " " + trade.lastName))
                     tradeData.add(trade);
                 }
                 tableAdapter.notifyDataSetChanged()
-                progressBar.visibility = View.GONE
+                if (fetched) {
+                    progressBar.visibility = View.GONE
+                    fetched = false;
+                }
             }
 
         })
-
-        // Fetch recent trades
-        tradeViewModel.fetchRecentTrades(10)
     }
     override fun onDestroyView() {
         super.onDestroyView()
