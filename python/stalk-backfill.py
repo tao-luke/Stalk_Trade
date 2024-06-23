@@ -124,6 +124,8 @@ def upload_names_to_firestore(data):
             }
             names_collection_ref.add(name_data)
 
+            print(f"Adding name: {first_name} {last_name}")
+
 def delete_old_entries(collection):
     one_year_ago = datetime.now() - timedelta(days=365)
     db = firestore.client()
