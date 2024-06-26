@@ -58,6 +58,9 @@
         <argument
             android:name="sourceFragment"
             app:argType="string" />
+        <action
+            android:id="@+id/action_politicianFragment_to_transactionDetailsFragment"
+            app:destination="@id/transactionDetailsFragment" />
     </fragment>
 
     <fragment
