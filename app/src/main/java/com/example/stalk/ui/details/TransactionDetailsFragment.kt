@@ -43,22 +43,6 @@ class TransactionDetailsFragment : Fragment() {
             textAmount.text = "Amount: ${trade.amount}"
             textSymbol.text = "Ticker: ${trade.ticker}"
         }
-
-//        tradeViewModel.trades.observe(viewLifecycleOwner, { trades ->
-//            val firstTrade = trades.firstOrNull()
-//            firstTrade?.let { trade ->
-//                binding.textFirstName.text = "First Name: ${trade.firstName}"
-//                binding.textLastName.text = "Last Name: ${trade.lastName}"
-//                binding.textLink.text = "Link: ${trade.link}"
-//                binding.textDateReceived.text = "Date Received: ${trade.dateRecieved}"
-//                binding.textTransactionDate.text = "Transaction Date: ${trade.transactionDate}"
-//                binding.textOwner.text = "Owner: ${trade.owner}"
-//                binding.textAssetDescription.text = "Asset Description: ${trade.assetDescription}"
-//                binding.textType.text = "Type: ${trade.type}"
-//                binding.textAmount.text = "Amount: ${trade.amount}"
-//                binding.textSymbol.text = "Ticker: ${trade.ticker}"
-//            }
-//        })
     }
 
     override fun onDestroyView() {
