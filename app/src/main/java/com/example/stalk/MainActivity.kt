@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-        tradeViewModel.trades.observe(this, Observer { trades ->
+        tradeViewModel.overviewTrades.observe(this, Observer { trades ->
             // Update the UI with the list of trades
             trades?.let {
                 for (trade in it) {

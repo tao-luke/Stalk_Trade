@@ -75,7 +75,7 @@ class HomeFragment : Fragment(), TableAdapter.OnItemClickListener {
         fetched = true;
 
         // Prepare table data
-        tradeViewModel.trades.observe(this, Observer { trades ->
+        tradeViewModel.overviewTrades.observe(this, Observer { trades ->
             // Update the UI with the list of trades
             trades?.let {
                 tradeData.clear()

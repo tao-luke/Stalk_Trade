@@ -13,8 +13,10 @@ class TradeViewModel : ViewModel() {
 
     private val repository = FirestoreRepository()
 
-    private val _trades = MutableLiveData<List<Trade>>()
-    val trades: LiveData<List<Trade>> get() = _trades
+    private val _politiciantrades = MutableLiveData<List<Trade>>()
+    private val _overviewTrades = MutableLiveData<List<Trade>>()
+    val politicianTrades: LiveData<List<Trade>> get() = _politiciantrades
+    val overviewTrades: LiveData<List<Trade>> get() = _overviewTrades
 
     fun fetchRecentTradesByName(firstName: String, lastName: String, limit: Long) {
         repository.getRecentTradesByName(firstName, lastName, limit).get()
@@ -25,7 +27,7 @@ class TradeViewModel : ViewModel() {
                         tradeList.add(trade)
                     }
                 }
-                _trades.value = tradeList
+                _politiciantrades.value = tradeList
             }
             .addOnFailureListener { e ->
                 // Handle the error
@@ -42,7 +44,7 @@ class TradeViewModel : ViewModel() {
                         tradeList.add(trade)
                     }
                 }
-                _trades.value = tradeList
+                _overviewTrades.value = tradeList
             }
             .addOnFailureListener { e ->
                 // Handle the error
