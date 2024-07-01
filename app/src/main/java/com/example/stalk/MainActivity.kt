@@ -34,6 +34,15 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
+        tradeViewModel.overviewTrades.observe(this, Observer { trades ->
+            // Update the UI with the list of trades
+            trades?.let {
+                for (trade in it) {
+                    Log.d("MainActivity", trade.toString())
+                }
+            }
+        })
+        
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
                 R.id.navigation_home -> navView.menu.findItem(R.id.navigation_home).isChecked = true
@@ -51,13 +60,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        tradeViewModel.trades.observe(this, Observer { trades ->
-            trades?.let {
-                for (trade in it) {
-                    Log.d("MainActivity", trade.toString())
-                }
-            }
-        })
 
         nameViewModel.names.observe(this, Observer { names ->
             names?.let {

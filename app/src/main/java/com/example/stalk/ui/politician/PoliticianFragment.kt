@@ -95,7 +95,7 @@ class PoliticianFragment : Fragment(), TableAdapter.OnItemClickListener  {
             tradeViewModel.fetchRecentTradesByName(nameParts[0], nameParts[1], 10) // Adjust limit as needed
         }
 
-        tradeViewModel.trades.observe(viewLifecycleOwner) { tradeHistory ->
+        tradeViewModel.politicianTrades.observe(viewLifecycleOwner) { tradeHistory ->
             updateTradeHistoryTable(tradeHistory)
         }
     }
