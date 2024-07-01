@@ -29,8 +29,6 @@ class MainActivity : AppCompatActivity() {
         val navView: BottomNavigationView = binding.navView
 
         val navController = findNavController(R.id.nav_host_fragment_activity_main)
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
         val appBarConfiguration = AppBarConfiguration(setOf(
             R.id.navigation_home, R.id.navigation_search, R.id.navigation_saved))
         setupActionBarWithNavController(navController, appBarConfiguration)
@@ -44,9 +42,26 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         })
+        
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            when (destination.id) {
+                R.id.navigation_home -> navView.menu.findItem(R.id.navigation_home).isChecked = true
+                R.id.navigation_search -> navView.menu.findItem(R.id.navigation_search).isChecked = true
+                R.id.navigation_saved -> navView.menu.findItem(R.id.navigation_saved).isChecked = true
+                R.id.politicianFragment -> {
+                    val previousBackStackEntry = navController.previousBackStackEntry
+                    if (previousBackStackEntry != null) {
+                        when (previousBackStackEntry.destination.id) {
+                            R.id.navigation_saved -> navView.menu.findItem(R.id.navigation_saved).isChecked = true
+                            R.id.navigation_search -> navView.menu.findItem(R.id.navigation_search).isChecked = true
+                        }
+                    }
+                }
+            }
+        }
+
 
         nameViewModel.names.observe(this, Observer { names ->
-            // Update the UI with the list of trades
             names?.let {
                 for (name in it) {
                     Log.d("MainActivity", name.toString())
@@ -55,8 +70,6 @@ class MainActivity : AppCompatActivity() {
         })
 
         nameViewModel.fetchNames()
-
-        // Fetch trades (example)
         tradeViewModel.fetchRecentTrades(10)
     }
 
