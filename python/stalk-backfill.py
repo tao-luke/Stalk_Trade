@@ -14,17 +14,6 @@ json_path = os.path.join(current_dir, json_file)
 cred = credentials.Certificate(json_path)
 firebase_admin.initialize_app(cred)
 
-new_names = []
-
-logging.basicConfig(
-    filename='db.log',  # Log file name
-    level=logging.INFO,  # Log level
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',  # Log message format
-    datefmt='%Y-%m-%d %H:%M:%S'  # Date format
-)
-
-logger = logging.getLogger(__name__)
-
 class Trade:
     def __init__(self, firstName, lastName, transactionDate, owner, assetDescription, type, amount, link, dateRecieved, ticker):
         self.firstName = firstName
@@ -102,6 +91,7 @@ def name_exists(collection_ref, first_name, last_name):
 
 # Function to upload trade data to Firestore
 def upload_trade_data_to_firestore(data, collection):
+    count = 0
     db = firestore.client()
     collection_ref = db.collection(collection)
     # Assuming data is a dictionary or list of dictionaries
@@ -114,6 +104,7 @@ def upload_trade_data_to_firestore(data, collection):
             data["hash"] = content_hash
             # Add data to Firestore
             collection_ref.add(data)
+            count += 1
     elif isinstance(data, list):
         for entry in data:
             # Calculate hash of content
@@ -124,6 +115,8 @@ def upload_trade_data_to_firestore(data, collection):
                 entry["hash"] = content_hash
                 # Add entry to Firestore
                 collection_ref.add(entry)
+                count += 1
+    return count
 
 # Function to upload unique names to Firestore
 def upload_names_to_firestore(data):
@@ -141,7 +134,7 @@ def upload_names_to_firestore(data):
             }
             names_collection_ref.add(name_data)
 
-            logger.info(f"Adding name: {first_name} {last_name}")
+            print(f"Adding name: {first_name} {last_name}")
 
 def delete_old_entries(collection):
     one_year_ago = datetime.now() - timedelta(days=365)
@@ -157,10 +150,10 @@ def delete_old_entries(collection):
             try:
                 date_obj = datetime.strptime(date_str, '%Y-%m-%d')
                 if date_obj < one_year_ago:
-                    logger.info(f"Deleting document ID: {doc.id} with date: {date_str}")
+                    print(f"Deleting document ID: {doc.id} with date: {date_str}")
                     collection_ref.document(doc.id).delete()
             except ValueError as e:
-                logger.error(f"Error parsing date for document ID: {doc.id} - {e}")
+                print(f"Error parsing date for document ID: {doc.id} - {e}")
 
 def trading_backfill(collection):
     for i in range(0, 31):
@@ -193,23 +186,38 @@ def remove_unused_names():
         trades_query = all_trades_collection_ref.where("firstName", "==", first_name).where("lastName", "==", last_name).limit(1).get()
         
         if len(trades_query) == 0:
-            logger.info(f"Deleting unused name: {first_name} {last_name}")
+            print(f"Deleting unused name: {first_name} {last_name}")
             names_collection_ref.document(name_doc.id).delete()
 
 def update(collection):
     data = fetch_data_senate_disclosure(0)
     parsed_data = parse_senate_disclosure(data)
-    upload_trade_data_to_firestore(parsed_data, collection)
+    new_trades1 = upload_trade_data_to_firestore(parsed_data, collection)
     upload_names_to_firestore(parsed_data)
 
     data = fetch_data_senate_trading(0)
     parsed_data = parse_senate_trading(data)
-    upload_trade_data_to_firestore(parsed_data, collection)
+    new_trades2 = upload_trade_data_to_firestore(parsed_data, collection)
     upload_names_to_firestore(parsed_data)
 
     delete_old_entries(collection)
 
     remove_unused_names()
+
+    print("Total of " + str(new_trades1 + new_trades2) + "new trades added")
+
+def set_perf():
+    db = firestore.client()
+
+    names_ref = db.collection('names')
+
+    docs = names_ref.stream()
+
+    # Iterate through each document and update it
+    for doc in docs:
+        doc_ref = doc.reference
+        doc_ref.update({"performance": 0})
+
 
 def main():
     update("all_trades")
