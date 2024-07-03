@@ -200,6 +200,20 @@ def update(collection):
 
     print("Update complete")
 
+
+def set_perf():
+    db = firestore.client()
+
+    names_ref = db.collection('names')
+
+    docs = names_ref.stream()
+
+    # Iterate through each document and update it
+    for doc in docs:
+        doc_ref = doc.reference
+        doc_ref.update({"performance": 0})
+
+
 def main():
     update("all_trades")
 
