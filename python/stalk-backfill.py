@@ -137,7 +137,8 @@ def upload_names_to_firestore(data):
         if first_name and last_name and not name_exists(names_collection_ref, first_name, last_name):
             name_data = {
                 "firstName": first_name,
-                "lastName": last_name
+                "lastName": last_name,
+                "performance": 0
             }
             names_collection_ref.add(name_data)
 
@@ -210,6 +211,19 @@ def update(collection):
     delete_old_entries(collection)
 
     remove_unused_names()
+
+def set_perf():
+    db = firestore.client()
+
+    names_ref = db.collection('names')
+
+    docs = names_ref.stream()
+
+    # Iterate through each document and update it
+    for doc in docs:
+        doc_ref = doc.reference
+        doc_ref.update({"performance": 0})
+
 
 def main():
     update("all_trades")
