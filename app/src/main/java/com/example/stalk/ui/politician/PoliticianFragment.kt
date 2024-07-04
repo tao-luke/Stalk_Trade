@@ -50,7 +50,10 @@ class PoliticianFragment : Fragment(), TableAdapter.OnItemClickListener  {
         val politicianImage = args.politicianImage
         val nameParts = politicianName.split(" ")
 
-        val politician = Name(nameParts[0], nameParts[1], politicianImage)
+        val firstName = nameParts[0]
+        val lastName = nameParts.drop(1).joinToString(" ") // Handle names with multiple parts
+
+        val politician = Name(firstName, lastName, politicianImage)
         politicianViewModel.setPolitician(politician)
 
         binding.textViewPoliticianName.text = politicianName
@@ -91,8 +94,8 @@ class PoliticianFragment : Fragment(), TableAdapter.OnItemClickListener  {
         tableRecyclerView.adapter = tableAdapter
 
         // Fetch and observe the trades for the politician
-        if (nameParts.size == 2) {
-            tradeViewModel.fetchRecentTradesByName(nameParts[0], nameParts[1], 10) // Adjust limit as needed
+        if (nameParts.size >= 2) {
+            tradeViewModel.fetchRecentTradesByName(firstName, lastName, 10) // Adjust limit as needed
         }
 
         tradeViewModel.politicianTrades.observe(viewLifecycleOwner) { tradeHistory ->
