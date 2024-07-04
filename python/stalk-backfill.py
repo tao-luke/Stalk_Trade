@@ -2,11 +2,28 @@ import requests
 import firebase_admin
 from firebase_admin import credentials, firestore
 import hashlib
+import logging
 from datetime import datetime, timedelta
+import os
 
-# Initialize Firebase Admin SDK
-cred = credentials.Certificate("stalk-db-firebase-adminsdk-g64um-cd9cc7e2a2.json")
+current_dir = os.path.dirname(os.path.realpath(__file__))
+json_file = 'stalk-db-firebase-adminsdk-g64um-cd9cc7e2a2.json'
+json_path = os.path.join(current_dir, json_file)
+
+# Initialize Firebase Admin SDK with the service account key
+cred = credentials.Certificate(json_path)
 firebase_admin.initialize_app(cred)
+
+new_names = []
+
+logging.basicConfig(
+    filename='db.log',  # Log file name
+    level=logging.INFO,  # Log level
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',  # Log message format
+    datefmt='%Y-%m-%d %H:%M:%S'  # Date format
+)
+
+logger = logging.getLogger(__name__)
 
 class Trade:
     def __init__(self, firstName, lastName, transactionDate, owner, assetDescription, type, amount, link, dateRecieved, ticker):
@@ -124,7 +141,7 @@ def upload_names_to_firestore(data):
             }
             names_collection_ref.add(name_data)
 
-            print(f"Adding name: {first_name} {last_name}")
+            logger.info(f"Adding name: {first_name} {last_name}")
 
 def delete_old_entries(collection):
     one_year_ago = datetime.now() - timedelta(days=365)
@@ -140,10 +157,10 @@ def delete_old_entries(collection):
             try:
                 date_obj = datetime.strptime(date_str, '%Y-%m-%d')
                 if date_obj < one_year_ago:
-                    print(f"Deleting document ID: {doc.id} with date: {date_str}")
+                    logger.info(f"Deleting document ID: {doc.id} with date: {date_str}")
                     collection_ref.document(doc.id).delete()
             except ValueError as e:
-                print(f"Error parsing date for document ID: {doc.id} - {e}")
+                logger.error(f"Error parsing date for document ID: {doc.id} - {e}")
 
 def trading_backfill(collection):
     for i in range(0, 31):
@@ -151,7 +168,7 @@ def trading_backfill(collection):
         parsed_data = parse_senate_trading(data)
         upload_trade_data_to_firestore(parsed_data, collection)
         upload_names_to_firestore(parsed_data)
-        print("Page ", i, " complete")
+        # print("Page ", i, " complete")
 
 def disclosure_backfill(collection):
     for i in range(0, 31):
@@ -159,7 +176,7 @@ def disclosure_backfill(collection):
         parsed_data = parse_senate_disclosure(data)
         upload_trade_data_to_firestore(parsed_data, collection)
         upload_names_to_firestore(parsed_data)
-        print("Page ", i, " complete")
+        # print("Page ", i, " complete")
 
 def remove_unused_names():
     db = firestore.client()
@@ -176,7 +193,7 @@ def remove_unused_names():
         trades_query = all_trades_collection_ref.where("firstName", "==", first_name).where("lastName", "==", last_name).limit(1).get()
         
         if len(trades_query) == 0:
-            print(f"Deleting unused name: {first_name} {last_name}")
+            logger.info(f"Deleting unused name: {first_name} {last_name}")
             names_collection_ref.document(name_doc.id).delete()
 
 def update(collection):
@@ -185,20 +202,14 @@ def update(collection):
     upload_trade_data_to_firestore(parsed_data, collection)
     upload_names_to_firestore(parsed_data)
 
-    print("Disclosure update complete")
-
     data = fetch_data_senate_trading(0)
     parsed_data = parse_senate_trading(data)
     upload_trade_data_to_firestore(parsed_data, collection)
     upload_names_to_firestore(parsed_data)
 
-    print("Trading update complete")
-
     delete_old_entries(collection)
 
     remove_unused_names()
-
-    print("Update complete")
 
 def main():
     update("all_trades")
