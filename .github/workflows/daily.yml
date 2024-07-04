@@ -32,4 +32,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: update-db-logs
-          path: update-db.log  # Adjust path to your log file
+          path: db.log  # Adjust path to your log file
