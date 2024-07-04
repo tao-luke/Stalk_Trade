@@ -5,6 +5,7 @@ on:
     # - cron: '0 5 * * *'  # Runs the workflow at 12:00 AM EST (5:00 AM UTC)
     # - cron: '0 17 * * *' # Runs the workflow at 12:00 PM EST (5:00 PM UTC)
     - cron: '*/5 * * * *'
+  workflow_dispatch:  # Allows manual triggering
 
 jobs:
   run-script:
