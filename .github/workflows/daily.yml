@@ -4,7 +4,7 @@ on:
   schedule:
     # - cron: '0 5 * * *'  # Runs the workflow at 12:00 AM EST (5:00 AM UTC)
     # - cron: '0 17 * * *' # Runs the workflow at 12:00 PM EST (5:00 PM UTC)
-    - cron: '*/5 * * * *'
+    - cron: '0 0,12 * * *'  # Runs the workflow at 12:00 AM and 12:00 PM UTC
   workflow_dispatch:  # Allows manual triggering
 
 jobs:
@@ -26,11 +26,4 @@ jobs:
           pip install -r requirements.txt
 
       - name: Run script
-        run: python python/stalk-backfill.py
-
-      - name: Upload Logs as Artifact
-        if: always()  # Ensure artifact is uploaded even if script fails
-        uses: actions/upload-artifact@v2
-        with:
-          name: update-db-logs
-          path: db.log  # Adjust path to your log file
+        run: python python/stalk-backfill.py | tee db.log

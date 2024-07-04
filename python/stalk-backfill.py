@@ -102,6 +102,7 @@ def name_exists(collection_ref, first_name, last_name):
 
 # Function to upload trade data to Firestore
 def upload_trade_data_to_firestore(data, collection):
+    count = 0
     db = firestore.client()
     collection_ref = db.collection(collection)
     # Assuming data is a dictionary or list of dictionaries
@@ -114,6 +115,7 @@ def upload_trade_data_to_firestore(data, collection):
             data["hash"] = content_hash
             # Add data to Firestore
             collection_ref.add(data)
+            count += 1
     elif isinstance(data, list):
         for entry in data:
             # Calculate hash of content
@@ -124,6 +126,8 @@ def upload_trade_data_to_firestore(data, collection):
                 entry["hash"] = content_hash
                 # Add entry to Firestore
                 collection_ref.add(entry)
+                count += 1
+    return count
 
 # Function to upload unique names to Firestore
 def upload_names_to_firestore(data):
@@ -200,17 +204,19 @@ def remove_unused_names():
 def update(collection):
     data = fetch_data_senate_disclosure(0)
     parsed_data = parse_senate_disclosure(data)
-    upload_trade_data_to_firestore(parsed_data, collection)
+    new_trades1 = upload_trade_data_to_firestore(parsed_data, collection)
     upload_names_to_firestore(parsed_data)
 
     data = fetch_data_senate_trading(0)
     parsed_data = parse_senate_trading(data)
-    upload_trade_data_to_firestore(parsed_data, collection)
+    new_trades2 = upload_trade_data_to_firestore(parsed_data, collection)
     upload_names_to_firestore(parsed_data)
 
     delete_old_entries(collection)
 
     remove_unused_names()
+
+    logger.info("Total of " + str(new_trades1 + new_trades2) + "new trades added")
 
 def set_perf():
     db = firestore.client()
