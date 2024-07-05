@@ -14,17 +14,6 @@ json_path = os.path.join(current_dir, json_file)
 cred = credentials.Certificate(json_path)
 firebase_admin.initialize_app(cred)
 
-new_names = []
-
-logging.basicConfig(
-    filename='db.log',  # Log file name
-    level=logging.INFO,  # Log level
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',  # Log message format
-    datefmt='%Y-%m-%d %H:%M:%S'  # Date format
-)
-
-logger = logging.getLogger(__name__)
-
 class Trade:
     def __init__(self, firstName, lastName, transactionDate, owner, assetDescription, type, amount, link, dateRecieved, ticker):
         self.firstName = firstName
@@ -146,7 +135,7 @@ def upload_names_to_firestore(data):
             }
             names_collection_ref.add(name_data)
 
-            logger.info(f"Adding name: {first_name} {last_name}")
+            print(f"Adding name: {first_name} {last_name}")
 
 def delete_old_entries(collection):
     one_year_ago = datetime.now() - timedelta(days=365)
@@ -162,10 +151,10 @@ def delete_old_entries(collection):
             try:
                 date_obj = datetime.strptime(date_str, '%Y-%m-%d')
                 if date_obj < one_year_ago:
-                    logger.info(f"Deleting document ID: {doc.id} with date: {date_str}")
+                    print(f"Deleting document ID: {doc.id} with date: {date_str}")
                     collection_ref.document(doc.id).delete()
             except ValueError as e:
-                logger.error(f"Error parsing date for document ID: {doc.id} - {e}")
+                print(f"Error parsing date for document ID: {doc.id} - {e}")
 
 def trading_backfill(collection):
     for i in range(0, 31):
@@ -198,7 +187,7 @@ def remove_unused_names():
         trades_query = all_trades_collection_ref.where("firstName", "==", first_name).where("lastName", "==", last_name).limit(1).get()
         
         if len(trades_query) == 0:
-            logger.info(f"Deleting unused name: {first_name} {last_name}")
+            print(f"Deleting unused name: {first_name} {last_name}")
             names_collection_ref.document(name_doc.id).delete()
 
 def update(collection):
@@ -216,7 +205,7 @@ def update(collection):
 
     remove_unused_names()
 
-    logger.info("Total of " + str(new_trades1 + new_trades2) + "new trades added")
+    print("Total of " + str(new_trades1 + new_trades2) + "new trades added")
 
 def set_perf():
     db = firestore.client()
