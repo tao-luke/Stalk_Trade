@@ -16,7 +16,6 @@ import com.example.stalk.databinding.FragmentPoliticianBinding
 import com.example.stalk.model.Name
 import com.example.stalk.model.SavedPolitician
 import com.example.stalk.ui.overviewTable.TableAdapter
-import com.example.stalk.ui.overviewTable.TableRowData
 import com.example.stalk.ui.saved.SavedViewModel
 import com.example.stalk.ui.viewmodel.TradeViewModel
 import com.example.stalk.model.Trade
@@ -98,8 +97,32 @@ class PoliticianFragment : Fragment(), TableAdapter.OnItemClickListener  {
             tradeViewModel.fetchRecentTradesByName(firstName, lastName, 10) // Adjust limit as needed
         }
 
-        tradeViewModel.politicianTrades.observe(viewLifecycleOwner) { tradeHistory ->
+        tradeViewModel.trades.observe(viewLifecycleOwner) { tradeHistory ->
             updateTradeHistoryTable(tradeHistory)
+        }
+
+        // Display the transaction volume
+        tradeViewModel.getTransactionVolume(firstName, lastName).observe(viewLifecycleOwner) { volume ->
+            binding.textViewTransactionVolume.text = "Transaction Volume: $volume"
+        }
+
+        // Display the performance
+        politicianViewModel.politician.observe(viewLifecycleOwner) { updatedPolitician ->
+            val performance = when (updatedPolitician.performance) {
+                2 -> {
+                    binding.textViewPerformanceSign.setTextColor(resources.getColor(android.R.color.holo_green_dark))
+                    "++"
+                }
+                1 -> {
+                    binding.textViewPerformanceSign.setTextColor(resources.getColor(android.R.color.holo_green_light))
+                    "+"
+                }
+                else -> {
+                    binding.textViewPerformanceSign.setTextColor(resources.getColor(android.R.color.holo_red_dark))
+                    "-"
+                }
+            }
+            binding.textViewPerformanceSign.text = performance
         }
     }
 
