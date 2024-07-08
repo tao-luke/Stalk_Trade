@@ -131,7 +131,7 @@ def update(collection):
 
     print("::debug::Total of " + str(len(new_trades)) + " new trades added")
 
-    send_new_trades(json.dumps(new_trades, fetch_fcm_tokens()))
+    send_data_message(fetch_fcm_tokens(), new_trades)
 
 def fetch_fcm_tokens():
     tokens = []
@@ -176,9 +176,7 @@ def remove_invalid_tokens(tokens):
         db.collection('device_tokens').document(token).delete()
 
 def main():
-    # update("all_trades")
-
-    send_data_message(fetch_fcm_tokens(), ["hello"])
+    update("all_trades")
 
 if __name__ == "__main__":
     main()
