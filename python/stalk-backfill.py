@@ -135,7 +135,7 @@ def upload_names_to_firestore(data):
             }
             names_collection_ref.add(name_data)
 
-            print(f"Adding name: {first_name} {last_name}")
+            print(f"::debug::Adding name: {first_name} {last_name}")
 
 def delete_old_entries(collection):
     one_year_ago = datetime.now() - timedelta(days=365)
@@ -151,10 +151,10 @@ def delete_old_entries(collection):
             try:
                 date_obj = datetime.strptime(date_str, '%Y-%m-%d')
                 if date_obj < one_year_ago:
-                    print(f"Deleting document ID: {doc.id} with date: {date_str}")
+                    # print(f"Deleting document ID: {doc.id} with date: {date_str}")
                     collection_ref.document(doc.id).delete()
             except ValueError as e:
-                print(f"Error parsing date for document ID: {doc.id} - {e}")
+                print(f"::error::Error parsing date for document ID: {doc.id} - {e}")
 
 def trading_backfill(collection):
     for i in range(0, 31):
@@ -187,7 +187,7 @@ def remove_unused_names():
         trades_query = all_trades_collection_ref.where("firstName", "==", first_name).where("lastName", "==", last_name).limit(1).get()
         
         if len(trades_query) == 0:
-            print(f"Deleting unused name: {first_name} {last_name}")
+            print(f"::debug::Deleting unused name: {first_name} {last_name}")
             names_collection_ref.document(name_doc.id).delete()
 
 def update(collection):
@@ -205,7 +205,7 @@ def update(collection):
 
     remove_unused_names()
 
-    print("Total of " + str(new_trades1 + new_trades2) + "new trades added")
+    print("::debug::Total of " + str(new_trades1 + new_trades2) + " new trades added")
 
 def set_perf():
     db = firestore.client()
