@@ -13,6 +13,7 @@ import androidx.activity.viewModels
 import com.example.stalk.ui.viewmodel.TradeViewModel
 import androidx.lifecycle.Observer
 import com.example.stalk.ui.viewmodel.NameViewModel
+import com.google.firebase.messaging.FirebaseMessaging
 
 class MainActivity : AppCompatActivity() {
 
@@ -34,14 +35,14 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-        tradeViewModel.overviewTrades.observe(this, Observer { trades ->
-            // Update the UI with the list of trades
-            trades?.let {
-                for (trade in it) {
-                    Log.d("MainActivity", trade.toString())
-                }
-            }
-        })
+//        tradeViewModel.overviewTrades.observe(this, Observer { trades ->
+//            // Update the UI with the list of trades
+//            trades?.let {
+//                for (trade in it) {
+//                    Log.d("MainActivity", trade.toString())
+//                }
+//            }
+//        })
         
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
@@ -61,16 +62,28 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-        nameViewModel.names.observe(this, Observer { names ->
-            names?.let {
-                for (name in it) {
-                    Log.d("MainActivity", name.toString())
-                }
-            }
-        })
+//        nameViewModel.names.observe(this, Observer { names ->
+//            names?.let {
+//                for (name in it) {
+//                    Log.d("MainActivity", name.toString())
+//                }
+//            }
+//        })
 
         nameViewModel.fetchNames()
         tradeViewModel.fetchRecentTrades(10)
+
+//        // Manually retrieve the FCM token
+//        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+//            if (!task.isSuccessful) {
+//                Log.w("FCM Token", "Fetching FCM token failed", task.exception)
+//                return@addOnCompleteListener
+//            }
+//
+//            // Get the FCM token
+//            val token = task.result
+//            Log.d("FCM Token", "FCM token: $token")
+//        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
