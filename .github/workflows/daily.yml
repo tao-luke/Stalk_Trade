@@ -27,3 +27,5 @@ jobs:
 
       - name: Run script
         run: python python/stalk-backfill.py
+        env:
+          ACTIONS_STEP_DEBUG: true
