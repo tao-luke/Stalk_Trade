@@ -1,3 +1,4 @@
+import json
 import requests
 import firebase_admin
 from firebase_admin import credentials, firestore
@@ -13,6 +14,8 @@ json_path = os.path.join(current_dir, json_file)
 # Initialize Firebase Admin SDK with the service account key
 cred = credentials.Certificate(json_path)
 firebase_admin.initialize_app(cred)
+
+annotations = []
 
 class Trade:
     def __init__(self, firstName, lastName, transactionDate, owner, assetDescription, type, amount, link, dateRecieved, ticker):
@@ -135,7 +138,7 @@ def upload_names_to_firestore(data):
             }
             names_collection_ref.add(name_data)
 
-            print(f"::debug::Adding name: {first_name} {last_name}")
+            add_debug(f"::debug::Adding name: {first_name} {last_name}")
 
 def delete_old_entries(collection):
     one_year_ago = datetime.now() - timedelta(days=365)
@@ -154,23 +157,7 @@ def delete_old_entries(collection):
                     # print(f"Deleting document ID: {doc.id} with date: {date_str}")
                     collection_ref.document(doc.id).delete()
             except ValueError as e:
-                print(f"::error::Error parsing date for document ID: {doc.id} - {e}")
-
-def trading_backfill(collection):
-    for i in range(0, 31):
-        data = fetch_data_senate_trading(i)
-        parsed_data = parse_senate_trading(data)
-        upload_trade_data_to_firestore(parsed_data, collection)
-        upload_names_to_firestore(parsed_data)
-        # print("Page ", i, " complete")
-
-def disclosure_backfill(collection):
-    for i in range(0, 31):
-        data = fetch_data_senate_disclosure(i)
-        parsed_data = parse_senate_disclosure(data)
-        upload_trade_data_to_firestore(parsed_data, collection)
-        upload_names_to_firestore(parsed_data)
-        # print("Page ", i, " complete")
+                add_error(f"::error::Error parsing date for document ID: {doc.id} - {e}")
 
 def remove_unused_names():
     db = firestore.client()
@@ -187,7 +174,7 @@ def remove_unused_names():
         trades_query = all_trades_collection_ref.where("firstName", "==", first_name).where("lastName", "==", last_name).limit(1).get()
         
         if len(trades_query) == 0:
-            print(f"::debug::Deleting unused name: {first_name} {last_name}")
+            add_debug("Deleting unused name: {first_name} {last_name}")
             names_collection_ref.document(name_doc.id).delete()
 
 def update(collection):
@@ -205,23 +192,36 @@ def update(collection):
 
     remove_unused_names()
 
-    print("::debug::Total of " + str(new_trades1 + new_trades2) + " new trades added")
+    add_debug("Total of " + str(new_trades1 + new_trades2) + " new trades added")
 
-def set_perf():
-    db = firestore.client()
+def add_error(message):
+    annotations.append({
+        "path": "",
+        "start_line": 0,
+        "end_line": 0,
+        "annotation_level": "error",
+        "message": message
+    })
 
-    names_ref = db.collection('names')
-
-    docs = names_ref.stream()
-
-    # Iterate through each document and update it
-    for doc in docs:
-        doc_ref = doc.reference
-        doc_ref.update({"performance": 0})
-
+def add_debug(message):
+    annotations.append({
+        "path": "",
+        "start_line": 0,
+        "end_line": 0,
+        "annotation_level": "debug",
+        "message": message
+    })
 
 def main():
     update("all_trades")
+
+    # Combine all annotations into one structure
+    output_data = {
+        "annotations": annotations
+    }
+
+    # Print JSON formatted data
+    print(json.dumps(output_data))
 
 if __name__ == "__main__":
     main()
