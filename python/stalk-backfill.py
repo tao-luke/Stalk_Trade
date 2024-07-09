@@ -208,7 +208,7 @@ def add_debug(message):
         "path": "",
         "start_line": 0,
         "end_line": 0,
-        "annotation_level": "debug",
+        "annotation_level": "notice",
         "message": message
     })
 
