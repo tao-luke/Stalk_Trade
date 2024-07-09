@@ -23,7 +23,7 @@ class PreferenceHelper(context: Context) {
     }
 
     fun savePoliticians(politicians: List<SavedPolitician>) {
-        val serializedList = politicians.joinToString("|") { "${it.name},${it.profilePictureUrl}" }
+        val serializedList = politicians.joinToString("|") { "${it.name},${it.profilePictureUrl},${it.performance}" }
         preferences.edit().putString(KEY_SAVED_POLITICIANS, serializedList).apply()
     }
 
@@ -34,8 +34,8 @@ class PreferenceHelper(context: Context) {
         }
         return serializedList.split("|").mapNotNull {
             val parts = it.split(",")
-            if (parts.size == 2) {
-                SavedPolitician(parts[0], parts[1])
+            if (parts.size == 3) {
+                SavedPolitician(parts[0], parts[1], parts[2].toInt())
             } else {
                 null  // Skip improperly formatted entries
             }
