@@ -22,8 +22,8 @@ class TradeViewModel : ViewModel() {
 
     private val db = FirebaseFirestore.getInstance()
 
-    fun fetchRecentTradesByName(firstName: String, lastName: String, limit: Long) {
-        repository.getRecentTradesByName(firstName, lastName, limit).get()
+    fun fetchRecentTradesByName(firstName: String, lastName: String) {
+        repository.getRecentTradesByName(firstName, lastName).get()
             .addOnSuccessListener { result ->
                 val tradeList = mutableListOf<Trade>()
                 for (document in result) {

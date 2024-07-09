@@ -67,7 +67,7 @@ class SearchFragment : Fragment() {
 
                 if (politician != null) {
                     // Fetch trades for the given name
-                    tradeViewModel.fetchRecentTradesByName(firstName, lastName, 10)
+                    tradeViewModel.fetchRecentTradesByName(firstName, lastName)
 
                     // Navigate to PoliticianFragment with the name, image URL, and source fragment as arguments
                     val action = SearchFragmentDirections.actionSearchFragmentToPoliticianFragment(
