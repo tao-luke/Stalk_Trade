@@ -27,47 +27,5 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run Python script and capture output
-        id: run-python-script
-        run: |
-          echo "Running Python script..."
-          json_output=$(python python/stalk-backfill.py)
-          echo "::set-output name=annotations::$json_output"
-
-      - name: Debug Output
-        run: |
-          echo "Annotations: ${{ steps.run-python-script.outputs.annotations }}"
-
-      - name: Create Annotations
-        if: success()  # Only create annotations if previous steps were successful
-        uses: actions/github-script@0.6.0
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const output = JSON.parse('${{ steps.run-python-script.outputs.annotations }}');
-            if (output && output.annotations && Array.isArray(output.annotations)) {
-              output.annotations.forEach(annotation => {
-                const annotationRequest = {
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  name: 'Python Script Annotations',
-                  head_sha: context.sha,
-                  status: 'completed',
-                  conclusion: 'success',
-                  output: {
-                    title: 'Python Script Output',
-                    summary: annotation.message,
-                    annotations: [{
-                      path: annotation.path || '',
-                      start_line: annotation.start_line || 0,
-                      end_line: annotation.end_line || 0,
-                      annotation_level: annotation.annotation_level || 'notice',
-                      message: annotation.message || ''
-                    }]
-                  }
-                };
-                github.checks.create(annotationRequest);
-              });
-            } else {
-              console.log("No annotations found in the output");
-            }
+      - name: Run Python script
+        run: python python/stalk-backfill.py
