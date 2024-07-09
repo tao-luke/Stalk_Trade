@@ -71,7 +71,7 @@ class HomeFragment : Fragment(), TableAdapter.OnItemClickListener {
         tableRecyclerView.adapter = tableAdapter
 
         // Fetch recent trades
-        tradeViewModel.fetchRecentTrades(10)
+        tradeViewModel.fetchRecentTrades(20)
         fetched = true;
 
         // Prepare table data
