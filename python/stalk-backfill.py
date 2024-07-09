@@ -17,7 +17,7 @@ cred = credentials.Certificate(json_path)
 firebase_admin.initialize_app(cred)
 
 db = firestore.client()
-
+annotations = []
 
 # Function to fetch trading data from external API
 def fetch_data_senate_trading(page):
@@ -75,7 +75,7 @@ def upload_names_to_firestore(data):
             }
             names_collection_ref.add(name_data)
 
-            print(f"::debug::Adding name: {first_name} {last_name}")
+            add_debug(f"::debug::Adding name: {first_name} {last_name}")
 
 def delete_old_entries(collection):
     one_year_ago = datetime.now() - timedelta(days=365)
@@ -93,7 +93,7 @@ def delete_old_entries(collection):
                     # print(f"Deleting document ID: {doc.id} with date: {date_str}")
                     collection_ref.document(doc.id).delete()
             except ValueError as e:
-                print(f"::error::Error parsing date for document ID: {doc.id} - {e}")
+                add_error(f"::error::Error parsing date for document ID: {doc.id} - {e}")
 
 def remove_unused_names():
     names_collection_ref = db.collection("names")
@@ -109,7 +109,7 @@ def remove_unused_names():
         trades_query = all_trades_collection_ref.where("firstName", "==", first_name).where("lastName", "==", last_name).limit(1).get()
         
         if len(trades_query) == 0:
-            print(f"::debug::Deleting unused name: {first_name} {last_name}")
+            add_debug("Deleting unused name: {first_name} {last_name}")
             names_collection_ref.document(name_doc.id).delete()
 
 def update(collection):
@@ -129,7 +129,7 @@ def update(collection):
 
     remove_unused_names()
 
-    print("::debug::Total of " + str(len(new_trades)) + " new trades added")
+    add_debug("Total of " + str(len(new_trades)) + " new trades added")
 
     send_data_message(fetch_fcm_tokens(), new_trades)
 
@@ -175,8 +175,34 @@ def remove_invalid_tokens(tokens):
     for token in tokens:
         db.collection('device_tokens').document(token).delete()
 
+def add_error(message):
+    annotations.append({
+        "path": "",
+        "start_line": 0,
+        "end_line": 0,
+        "annotation_level": "error",
+        "message": message
+    })
+
+def add_debug(message):
+    annotations.append({
+        "path": "",
+        "start_line": 0,
+        "end_line": 0,
+        "annotation_level": "notice",
+        "message": message
+    })
+
 def main():
     update("all_trades")
+
+    # Combine all annotations into one structure
+    output_data = {
+        "annotations": annotations
+    }
+
+    # Print JSON formatted data
+    print(json.dumps(output_data))
 
 if __name__ == "__main__":
     main()
