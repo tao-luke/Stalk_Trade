@@ -48,6 +48,8 @@ dependencies {
     implementation(libs.firebase.firestore.ktx)
     implementation(libs.firebase.messaging.ktx)
     val composeBom = platform("androidx.compose:compose-bom:2024.05.00")
+    implementation("androidx.work:work-runtime-ktx:2.7.0")
+
     implementation(composeBom)
     androidTestImplementation(composeBom)
     implementation("androidx.compose.material3:material3")
