@@ -24,6 +24,12 @@ jobs:
           python -m pip install --upgrade pip
           # If you have dependencies, list them here, e.g.,
           pip install -r requirements.txt
+      
+      - name: Enable Debug Logging
+        run: echo "ACTIONS_STEP_DEBUG=true" >> $GITHUB_ENV
 
+      - name: Print Debug Message Directly
+        run: echo "::debug::This is a direct debug message"
+        
       - name: Run script
         run: python python/stalk-backfill.py
