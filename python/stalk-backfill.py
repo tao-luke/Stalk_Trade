@@ -159,7 +159,7 @@ def send_data_message(tokens, trades_data):
 
     # Send the message
     response = messaging.send_multicast(data_message)
-    print(f'Successfully sent message: {response.success_count} messages were sent successfully')
+    add_debug(f'Successfully sent message: {response.success_count} messages were sent successfully')
     
     if response.failure_count > 0:
         responses = response.responses
@@ -168,7 +168,7 @@ def send_data_message(tokens, trades_data):
             if not resp.success:
                 # The token is invalid, log the token and error message
                 failed_tokens.append(tokens[idx])
-                print(f'Token {tokens[idx]} failed: {resp.exception}')
+                add_error(f'Token {tokens[idx]} failed: {resp.exception}')
         remove_invalid_tokens(failed_tokens)
 
 def remove_invalid_tokens(tokens):
