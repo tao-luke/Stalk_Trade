@@ -1,6 +1,10 @@
 package com.example.stalk.service
 
 import android.util.Log
+import androidx.work.Data
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import com.example.stalk.ui.saved.AlertWorker
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
@@ -39,8 +43,19 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         remoteMessage.data.isNotEmpty().let {
             Log.d(TAG, "Message data payload: " + remoteMessage.data)
 
-            // TODO: Handle the data message
+            // Extract the name from the payload
+            val payloadName = remoteMessage.data["name"] ?: return
 
+            // Pass the payload to the AlertWorker
+            val inputData = Data.Builder()
+                .putString("payloadName", payloadName)
+                .build()
+
+            val workRequest = OneTimeWorkRequestBuilder<AlertWorker>()
+                .setInputData(inputData)
+                .build()
+
+            WorkManager.getInstance(applicationContext).enqueue(workRequest)
         }
     }
 
