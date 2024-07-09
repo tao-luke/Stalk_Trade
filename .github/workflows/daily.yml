@@ -2,14 +2,17 @@ name: Update DB
 
 on:
   schedule:
-    # - cron: '0 5 * * *'  # Runs the workflow at 12:00 AM EST (5:00 AM UTC)
-    # - cron: '0 17 * * *' # Runs the workflow at 12:00 PM EST (5:00 PM UTC)
     - cron: '0 0,12 * * *'  # Runs the workflow at 12:00 AM and 12:00 PM UTC
   workflow_dispatch:  # Allows manual triggering
 
 jobs:
   run-script:
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: write  # Ensure the workflow has write permissions
+      checks: write
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -22,36 +25,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          # If you have dependencies, list them here, e.g.,
           pip install -r requirements.txt
 
-      - name: Run Python script and capture output
-        id: run-python-script
-        run: |
-          echo "Running Python script..."
-          json_output=$(python python/stalk-backfill.py) 
-          echo "::set-output name=annotations::$json_output"
-
-      - name: Create Annotations
-        if: success()  # Only create annotations if previous steps were successful
-        uses: actions/github-script@0.6.0
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const output = JSON.parse('${{ steps.run-python-script.outputs.annotations }}');
-            output.annotations.forEach(annotation => {
-              const annotationRequest = {
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                name: 'Python Script Annotations',
-                head_sha: context.sha,
-                status: 'completed',
-                conclusion: 'success',
-                output: {
-                  title: 'Python Script Output',
-                  summary: annotation.message,
-                  annotations: [annotation]
-                }
-              };
-              github.checks.create(annotationRequest);
-            });
+      - name: Run Python script
+        run: python python/stalk-backfill.py
