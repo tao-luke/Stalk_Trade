@@ -24,12 +24,37 @@ jobs:
           python -m pip install --upgrade pip
           # If you have dependencies, list them here, e.g.,
           pip install -r requirements.txt
-      
-      - name: Enable Debug Logging
-        run: echo "ACTIONS_STEP_DEBUG=true" >> $GITHUB_ENV
-
-      - name: Print Debug Message Directly
-        run: echo "::debug::This is a direct debug message"
         
       - name: Run script
         run: python python/stalk-backfill.py
+
+      - name: Run Python script and capture output
+        id: run-python-script
+        run: |
+          echo "Running Python script..."
+          json_output=$(python python/stalk-backfill.py) 
+          echo "::set-output name=annotations::$json_output"
+
+      - name: Create Annotations
+        if: success()  # Only create annotations if previous steps were successful
+        uses: actions/github-script@0.6.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const output = JSON.parse('${{ steps.run-python-script.outputs.annotations }}');
+            output.annotations.forEach(annotation => {
+              const annotationRequest = {
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                name: 'Python Script Annotations',
+                head_sha: context.sha,
+                status: 'completed',
+                conclusion: 'success',
+                output: {
+                  title: 'Python Script Output',
+                  summary: annotation.message,
+                  annotations: [annotation]
+                }
+              };
+              github.checks.create(annotationRequest);
+            });
