@@ -16,11 +16,11 @@ import com.example.stalk.databinding.FragmentPoliticianBinding
 import com.example.stalk.model.Name
 import com.example.stalk.model.SavedPolitician
 import com.example.stalk.ui.overviewTable.TableAdapter
-import com.example.stalk.ui.saved.SavedViewModel
 import com.example.stalk.ui.viewmodel.TradeViewModel
 import com.example.stalk.model.Trade
+import com.example.stalk.ui.saved.SavedViewModel
 
-class PoliticianFragment : Fragment(), TableAdapter.OnItemClickListener  {
+class PoliticianFragment : Fragment(), TableAdapter.OnItemClickListener {
 
     private var _binding: FragmentPoliticianBinding? = null
     private val binding get() = _binding!!
@@ -47,12 +47,13 @@ class PoliticianFragment : Fragment(), TableAdapter.OnItemClickListener  {
         // Display the politician name and image at the top
         val politicianName = args.politicianName
         val politicianImage = args.politicianImage
+        val performance = args.performance // Get performance from arguments
         val nameParts = politicianName.split(" ")
 
         val firstName = nameParts[0]
         val lastName = nameParts.drop(1).joinToString(" ") // Handle names with multiple parts
 
-        val politician = Name(firstName, lastName, politicianImage)
+        val politician = Name(firstName, lastName, politicianImage, performance = performance) // Pass performance
         politicianViewModel.setPolitician(politician)
 
         binding.textViewPoliticianName.text = politicianName
@@ -71,7 +72,8 @@ class PoliticianFragment : Fragment(), TableAdapter.OnItemClickListener  {
             politicianViewModel.toggleNotification()
             val savedPolitician = SavedPolitician(
                 name = politicianName,
-                profilePictureUrl = politicianImage
+                profilePictureUrl = politicianImage,
+                performance = performance // Pass performance
             )
             if (politician.isNotified) {
                 savedViewModel.addPolitician(savedPolitician)

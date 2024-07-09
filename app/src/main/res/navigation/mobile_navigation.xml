@@ -33,6 +33,9 @@
                 android:name="politicianImage"
                 app:argType="string" />
             <argument
+                android:name="performance"
+                app:argType="integer" />
+            <argument
                 android:name="sourceFragment"
                 app:argType="string" />
         </action>
@@ -67,9 +70,13 @@
             android:name="politicianImage"
             app:argType="string" />
         <argument
+            android:name="performance"
+            app:argType="integer" />
+        <argument
             android:name="sourceFragment"
             app:argType="string" />
     </fragment>
+
 
     <fragment
         android:id="@+id/navigation_saved"
@@ -85,6 +92,9 @@
             <argument
                 android:name="politicianImage"
                 app:argType="string" />
+            <argument
+                android:name="performance"
+                app:argType="integer" />
             <argument
                 android:name="sourceFragment"
                 app:argType="string" />

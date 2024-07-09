@@ -73,6 +73,7 @@ class SearchFragment : Fragment() {
                     val action = SearchFragmentDirections.actionSearchFragmentToPoliticianFragment(
                         politician.firstName + " " + politician.lastName,
                         politician.img,
+                        politician.performance, // Pass the performance
                         "search"
                     )
                     findNavController().navigate(action)

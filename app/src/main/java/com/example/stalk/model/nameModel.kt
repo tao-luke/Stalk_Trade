@@ -8,5 +8,5 @@ data class Name(
     val performance: Int = 0
 ) {
     // No-argument constructor
-    constructor() : this("", "", "", false)
+    constructor() : this("", "", "", false, 0)
 }
