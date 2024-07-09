@@ -138,7 +138,7 @@ def upload_names_to_firestore(data):
             }
             names_collection_ref.add(name_data)
 
-            add_debug(f"::debug::Adding name: {first_name} {last_name}")
+            print(f"::debug::Adding name: {first_name} {last_name}")
 
 def delete_old_entries(collection):
     one_year_ago = datetime.now() - timedelta(days=365)
@@ -157,7 +157,7 @@ def delete_old_entries(collection):
                     # print(f"Deleting document ID: {doc.id} with date: {date_str}")
                     collection_ref.document(doc.id).delete()
             except ValueError as e:
-                add_error(f"::error::Error parsing date for document ID: {doc.id} - {e}")
+                print(f"::error::Error parsing date for document ID: {doc.id} - {e}")
 
 def remove_unused_names():
     db = firestore.client()
@@ -174,7 +174,7 @@ def remove_unused_names():
         trades_query = all_trades_collection_ref.where("firstName", "==", first_name).where("lastName", "==", last_name).limit(1).get()
         
         if len(trades_query) == 0:
-            add_debug("Deleting unused name: {first_name} {last_name}")
+            print("Deleting unused name: {first_name} {last_name}")
             names_collection_ref.document(name_doc.id).delete()
 
 def update(collection):
@@ -192,25 +192,7 @@ def update(collection):
 
     remove_unused_names()
 
-    add_debug("Total of " + str(new_trades1 + new_trades2) + " new trades added")
-
-def add_error(message):
-    annotations.append({
-        "path": "",
-        "start_line": 0,
-        "end_line": 0,
-        "annotation_level": "error",
-        "message": message
-    })
-
-def add_debug(message):
-    annotations.append({
-        "path": "",
-        "start_line": 0,
-        "end_line": 0,
-        "annotation_level": "notice",
-        "message": message
-    })
+    print("Total of " + str(new_trades1 + new_trades2) + " new trades added")
 
 def main():
     update("all_trades")
