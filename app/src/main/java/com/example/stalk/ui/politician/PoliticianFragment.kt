@@ -96,7 +96,7 @@ class PoliticianFragment : Fragment(), TableAdapter.OnItemClickListener {
 
         // Fetch and observe the trades for the politician
         if (nameParts.size >= 2) {
-            tradeViewModel.fetchRecentTradesByName(firstName, lastName, 10) // Adjust limit as needed
+            tradeViewModel.fetchRecentTradesByName(firstName, lastName) // Adjust limit as needed
         }
 
         tradeViewModel.trades.observe(viewLifecycleOwner) { tradeHistory ->
