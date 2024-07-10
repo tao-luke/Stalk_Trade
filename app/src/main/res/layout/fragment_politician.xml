@@ -151,6 +151,17 @@
                 android:gravity="center" />
         </LinearLayout>
 
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:visibility="gone"
+            android:indeterminateTint="#5D3FD3"
+            app:layout_constraintTop_toBottomOf="@id/columnHeaders"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="100dp" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/trade_history_recyclerview"
             android:layout_width="0dp"
