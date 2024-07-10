@@ -16,12 +16,11 @@ import com.example.stalk.databinding.FragmentPoliticianBinding
 import com.example.stalk.model.Name
 import com.example.stalk.model.SavedPolitician
 import com.example.stalk.ui.overviewTable.TableAdapter
-import com.example.stalk.ui.overviewTable.TableRowData
-import com.example.stalk.ui.saved.SavedViewModel
 import com.example.stalk.ui.viewmodel.TradeViewModel
 import com.example.stalk.model.Trade
+import com.example.stalk.ui.saved.SavedViewModel
 
-class PoliticianFragment : Fragment(), TableAdapter.OnItemClickListener  {
+class PoliticianFragment : Fragment(), TableAdapter.OnItemClickListener {
 
     private var _binding: FragmentPoliticianBinding? = null
     private val binding get() = _binding!!
@@ -48,12 +47,13 @@ class PoliticianFragment : Fragment(), TableAdapter.OnItemClickListener  {
         // Display the politician name and image at the top
         val politicianName = args.politicianName
         val politicianImage = args.politicianImage
+        val performance = args.performance // Get performance from arguments
         val nameParts = politicianName.split(" ")
 
         val firstName = nameParts[0]
         val lastName = nameParts.drop(1).joinToString(" ") // Handle names with multiple parts
 
-        val politician = Name(firstName, lastName, politicianImage)
+        val politician = Name(firstName, lastName, politicianImage, performance = performance) // Pass performance
         politicianViewModel.setPolitician(politician)
 
         binding.textViewPoliticianName.text = politicianName
@@ -72,7 +72,8 @@ class PoliticianFragment : Fragment(), TableAdapter.OnItemClickListener  {
             politicianViewModel.toggleNotification()
             val savedPolitician = SavedPolitician(
                 name = politicianName,
-                profilePictureUrl = politicianImage
+                profilePictureUrl = politicianImage,
+                performance = performance // Pass performance
             )
             if (politician.isNotified) {
                 savedViewModel.addPolitician(savedPolitician)
@@ -95,11 +96,35 @@ class PoliticianFragment : Fragment(), TableAdapter.OnItemClickListener  {
 
         // Fetch and observe the trades for the politician
         if (nameParts.size >= 2) {
-            tradeViewModel.fetchRecentTradesByName(firstName, lastName, 10) // Adjust limit as needed
+            tradeViewModel.fetchRecentTradesByName(firstName, lastName) // Adjust limit as needed
         }
 
-        tradeViewModel.politicianTrades.observe(viewLifecycleOwner) { tradeHistory ->
+        tradeViewModel.trades.observe(viewLifecycleOwner) { tradeHistory ->
             updateTradeHistoryTable(tradeHistory)
+        }
+
+        // Display the transaction volume
+        tradeViewModel.getTransactionVolume(firstName, lastName).observe(viewLifecycleOwner) { volume ->
+            binding.textViewTransactionVolume.text = "Transaction Volume: $volume"
+        }
+
+        // Display the performance
+        politicianViewModel.politician.observe(viewLifecycleOwner) { updatedPolitician ->
+            val performance = when (updatedPolitician.performance) {
+                2 -> {
+                    binding.textViewPerformanceSign.setTextColor(resources.getColor(android.R.color.holo_green_dark))
+                    "++"
+                }
+                1 -> {
+                    binding.textViewPerformanceSign.setTextColor(resources.getColor(android.R.color.holo_green_light))
+                    "+"
+                }
+                else -> {
+                    binding.textViewPerformanceSign.setTextColor(resources.getColor(android.R.color.holo_red_dark))
+                    "-"
+                }
+            }
+            binding.textViewPerformanceSign.text = performance
         }
     }
 

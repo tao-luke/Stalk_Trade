@@ -17,7 +17,6 @@ cred = credentials.Certificate(json_path)
 firebase_admin.initialize_app(cred)
 
 db = firestore.client()
-annotations = []
 
 # Function to fetch trading data from external API
 def fetch_data_senate_trading(page):
@@ -61,7 +60,6 @@ def upload_trade_data_to_firestore(data, collection):
                     print(f"::error::Error parsing date: {e}")
             else:
                 print(f"::error::No transaction date found in data: {data}")
-
     elif isinstance(data, list):
         for entry in data:
             # Calculate hash of content
@@ -104,7 +102,6 @@ def upload_names_to_firestore(data):
                 "performance": 0
             }
             names_collection_ref.add(name_data)
-
             print(f"::debug::Adding name: {first_name} {last_name}")
 
 def remove_unused_names():
