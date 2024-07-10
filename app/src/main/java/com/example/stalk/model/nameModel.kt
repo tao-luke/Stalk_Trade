@@ -4,8 +4,9 @@ data class Name(
     val firstName: String = "",
     val lastName: String = "",
     val img: String = "",
-    var isNotified: Boolean = false
+    var isNotified: Boolean = false,
+    val performance: Int = 0
 ) {
     // No-argument constructor
-    constructor() : this("", "", "", false)
+    constructor() : this("", "", "", false, 0)
 }

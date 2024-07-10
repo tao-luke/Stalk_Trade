@@ -15,12 +15,11 @@ class FirestoreRepository {
             .whereEqualTo("lastName", lastName)
     }
 
-    fun getRecentTradesByName(firstName: String, lastName: String, limit: Long): Query {
+    fun getRecentTradesByName(firstName: String, lastName: String): Query {
         return trades
             .whereEqualTo("firstName", firstName)
             .whereEqualTo("lastName", lastName)
             .orderBy("transactionDate", Query.Direction.DESCENDING)
-            .limit(limit)
     }
 
     fun getRecentTrades(limit: Long): Query {

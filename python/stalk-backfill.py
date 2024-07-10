@@ -122,7 +122,6 @@ def upload_trade_data_to_firestore(data, collection):
                     print(f"::error::Error parsing date: {e}")
             else:
                 print(f"::error::No transaction date found in data: {data}")
-
     elif isinstance(data, list):
         for entry in data:
             # Calculate hash of content
@@ -162,10 +161,10 @@ def upload_names_to_firestore(data):
         if first_name and last_name and not name_exists(names_collection_ref, first_name, last_name):
             name_data = {
                 "firstName": first_name,
-                "lastName": last_name
+                "lastName": last_name,
+                "performance": 0
             }
             names_collection_ref.add(name_data)
-
             print(f"::debug::Adding name: {first_name} {last_name}")
 
 def remove_unused_names():
