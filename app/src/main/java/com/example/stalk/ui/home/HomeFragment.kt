@@ -77,18 +77,7 @@ class HomeFragment : Fragment(), TableAdapter.OnItemClickListener {
         // Prepare table data
         tradeViewModel.overviewTrades.observe(this, Observer { trades ->
             // Update the UI with the list of trades
-            trades?.let {
-                tradeData.clear()
-                for (trade in it) {
-                    tradeData.add(trade);
-                }
-                tableAdapter.notifyDataSetChanged()
-                if (fetched) {
-                    progressBar.visibility = View.GONE
-                    fetched = false;
-                }
-            }
-
+            updateTradeHistoryTable(trades)
         })
     }
     override fun onDestroyView() {
@@ -99,5 +88,19 @@ class HomeFragment : Fragment(), TableAdapter.OnItemClickListener {
     override fun onItemClick(trade: Trade) {
         val action = HomeFragmentDirections.actionHomeFragmentToTransactionDetailsFragment(trade)
         findNavController().navigate(action)
+    }
+
+    private fun updateTradeHistoryTable(trades: List<Trade>) {
+        trades?.let {
+            tradeData.clear()
+            for (trade in it) {
+                tradeData.add(trade);
+            }
+            tableAdapter.notifyDataSetChanged()
+            if (fetched) {
+                progressBar.visibility = View.GONE
+                fetched = false;
+            }
+        }
     }
 }

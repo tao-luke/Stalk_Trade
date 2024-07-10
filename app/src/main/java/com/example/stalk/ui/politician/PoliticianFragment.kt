@@ -1,6 +1,8 @@
 package com.example.stalk.ui.politician
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -19,6 +21,7 @@ import com.example.stalk.ui.overviewTable.TableAdapter
 import com.example.stalk.ui.viewmodel.TradeViewModel
 import com.example.stalk.model.Trade
 import com.example.stalk.ui.saved.SavedViewModel
+import android.widget.ProgressBar
 
 class PoliticianFragment : Fragment(), TableAdapter.OnItemClickListener {
 
@@ -31,6 +34,7 @@ class PoliticianFragment : Fragment(), TableAdapter.OnItemClickListener {
     private lateinit var tableAdapter: TableAdapter
     private var tradeData: MutableList<Trade> = mutableListOf()
     private val args: PoliticianFragmentArgs by navArgs()
+    private lateinit var progressBar: ProgressBar
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,11 +42,14 @@ class PoliticianFragment : Fragment(), TableAdapter.OnItemClickListener {
     ): View {
         _binding = FragmentPoliticianBinding.inflate(inflater, container, false)
         setHasOptionsMenu(true) // Enable options menu to handle the up button
+        progressBar = binding.progressBar
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        progressBar.visibility = View.VISIBLE
 
         // Display the politician name and image at the top
         val politicianName = args.politicianName
@@ -100,7 +107,12 @@ class PoliticianFragment : Fragment(), TableAdapter.OnItemClickListener {
         }
 
         tradeViewModel.trades.observe(viewLifecycleOwner) { tradeHistory ->
+            tableRecyclerView.visibility = View.GONE
             updateTradeHistoryTable(tradeHistory)
+            Handler(Looper.getMainLooper()).postDelayed({
+                progressBar.visibility = View.GONE
+                tableRecyclerView.visibility = View.VISIBLE
+            }, 1000)
         }
 
         // Display the transaction volume
