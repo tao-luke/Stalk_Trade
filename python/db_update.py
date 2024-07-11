@@ -1,7 +1,5 @@
 import requests
 from datetime import datetime, timedelta
-from collections import Counter
-
 from firebase_init import *
 from trade import * 
 from util import *
@@ -109,17 +107,6 @@ def remove_unused_names():
             print("Deleting unused name: {first_name} {last_name}")
             names_collection_ref.document(name_doc.id).delete()
 
-def count_name_occurrences(trades):
-    # Create a list of full names
-    full_names = [f"{trade['firstName']} {trade['lastName']}" for trade in trades]
-    
-    # Count occurrences of each full name
-    name_counts = Counter(full_names)
-    
-    # Convert Counter object to list of dictionaries
-    result = [{'name': name, 'count': count} for name, count in name_counts.items()]
-    
-    return result
 
 
 def update(collection):
