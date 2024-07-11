@@ -107,6 +107,23 @@ def remove_unused_names():
             print("Deleting unused name: {first_name} {last_name}")
             names_collection_ref.document(name_doc.id).delete()
 
+def delete_old_entries(collection):
+    one_year_ago = datetime.now() - timedelta(days=365)
+    collection_ref = db.collection(collection)
+    docs = collection_ref.stream()
+    
+    for doc in docs:
+        doc_data = doc.to_dict()
+        date_str = doc_data.get('transactionDate')
+        
+        if date_str:
+            try:
+                date_obj = datetime.strptime(date_str, '%Y-%m-%d')
+                if date_obj < one_year_ago:
+                    print(f"Deleting document ID: {doc.id} with date: {date_str}")
+                    collection_ref.document(doc.id).delete()
+            except ValueError as e:
+                print(f"Error parsing date for document ID: {doc.id} - {e}")
 
 
 def update(collection):
@@ -124,6 +141,8 @@ def update(collection):
     remove_unused_names()
 
     print("Total of " + str(len(new_trades1 + new_trades2)) + " new trades added")
+    
+    delete_old_entries(collection)
 
     send_data_message(count_name_occurrences(new_trades1 + new_trades2))
 
