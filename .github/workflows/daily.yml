@@ -28,4 +28,4 @@ jobs:
           pip install -r requirements.txt
 
       - name: Run Python script
-        run: python python/stalk-backfill.py
+        run: python python/db_update.py

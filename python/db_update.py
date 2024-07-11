@@ -1,22 +1,11 @@
-import json
 import requests
-import firebase_admin
-from firebase_admin import credentials, firestore, messaging
 from datetime import datetime, timedelta
-import os
+from collections import Counter
 
+from firebase_init import *
 from trade import * 
 from util import *
-
-current_dir = os.path.dirname(os.path.realpath(__file__))
-json_file = 'stalk-db-firebase-adminsdk-g64um-cd9cc7e2a2.json'
-json_path = os.path.join(current_dir, json_file)
-
-# Initialize Firebase Admin SDK with the service account key
-cred = credentials.Certificate(json_path)
-firebase_admin.initialize_app(cred)
-
-db = firestore.client()
+from message import *
 
 # Function to fetch trading data from external API
 def fetch_data_senate_trading(page):
@@ -34,7 +23,6 @@ def fetch_data_senate_disclosure(page):
 def upload_trade_data_to_firestore(data, collection):
     new = []
     one_year_ago = datetime.now() - timedelta(days=365)
-    db = firestore.client()
     collection_ref = db.collection(collection)
     
     if isinstance(data, dict):
@@ -140,6 +128,19 @@ def remove_unused_names():
             print("Deleting unused name: {first_name} {last_name}")
             names_collection_ref.document(name_doc.id).delete()
 
+def count_name_occurrences(trades):
+    # Create a list of full names
+    full_names = [f"{trade['firstName']} {trade['lastName']}" for trade in trades]
+    
+    # Count occurrences of each full name
+    name_counts = Counter(full_names)
+    
+    # Convert Counter object to list of dictionaries
+    result = [{'name': name, 'count': count} for name, count in name_counts.items()]
+    
+    return result
+
+
 def update(collection):
     new_trades = []
 
@@ -199,8 +200,11 @@ def remove_invalid_tokens(tokens):
     for token in tokens:
         db.collection('device_tokens').document(token).delete()
 
+    send_data_message(count_name_occurrences(new_trades1 + new_trades2))
+
 def main():
     update("all_trades")
+
 
 if __name__ == "__main__":
     main()

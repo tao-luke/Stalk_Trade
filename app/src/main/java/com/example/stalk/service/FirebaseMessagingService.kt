@@ -1,13 +1,15 @@
 package com.example.stalk.service
 
+import AlertWorker
 import android.util.Log
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
-import com.example.stalk.ui.saved.AlertWorker
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import org.json.JSONArray
+import org.json.JSONException
 
 class MyFirebaseMessagingService : FirebaseMessagingService() {
 
@@ -41,21 +43,32 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         // Check if message contains a data payload
         remoteMessage.data.isNotEmpty().let {
-            Log.d(TAG, "Message data payload: " + remoteMessage.data)
+//            Log.d(TAG, "Message data payload: " + remoteMessage.data)
 
-            // Extract the name from the payload
-            val payloadName = remoteMessage.data["name"] ?: return
+            val dataString  = remoteMessage.data["data"]
+            // HashMap to store occurrences of full names
+            val fullNameCounts = JSONArray(dataString)
 
-            // Pass the payload to the AlertWorker
-            val inputData = Data.Builder()
-                .putString("payloadName", payloadName)
-                .build()
+            // Iterate through the HashMap and create a WorkRequest for each full name and count
+            for (i in 0 until fullNameCounts.length()) {
 
-            val workRequest = OneTimeWorkRequestBuilder<AlertWorker>()
-                .setInputData(inputData)
-                .build()
+                val item = fullNameCounts.getJSONObject(i)
+                val name = item.getString("name")
+                val count = item.getInt("count")
 
-            WorkManager.getInstance(applicationContext).enqueue(workRequest)
+                val inputData = Data.Builder()
+                    .putString("fullName", name)
+                    .putInt("count", count)
+                    .build()
+
+                val workRequest = OneTimeWorkRequestBuilder<AlertWorker>()
+                    .setInputData(inputData)
+                    .build()
+
+                WorkManager.getInstance(applicationContext).enqueue(workRequest)
+
+                Log.d(TAG, "Enqueued WorkRequest for Full Name: $name, Count: $count")
+            }
         }
     }
 
