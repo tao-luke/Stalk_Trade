@@ -46,7 +46,6 @@ def upload_trade_data_to_firestore(data, collection):
                     print(f"::error::Error parsing date: {e}")
             else:
                 print(f"::error::No transaction date found in data: {data}")
-
     elif isinstance(data, list):
         for entry in data:
             # Calculate hash of content
@@ -85,29 +84,11 @@ def upload_names_to_firestore(data):
         if first_name and last_name and not name_exists(names_collection_ref, first_name, last_name):
             name_data = {
                 "firstName": first_name,
-                "lastName": last_name
+                "lastName": last_name,
+                "performance": 0
             }
             names_collection_ref.add(name_data)
-
             print(f"::debug::Adding name: {first_name} {last_name}")
-
-def delete_old_entries(collection):
-    one_year_ago = datetime.now() - timedelta(days=365)
-    collection_ref = db.collection(collection)
-    docs = collection_ref.stream()
-    
-    for doc in docs:
-        doc_data = doc.to_dict()
-        date_str = doc_data.get('transactionDate')
-        
-        if date_str:
-            try:
-                date_obj = datetime.strptime(date_str, '%Y-%m-%d')
-                if date_obj < one_year_ago:
-                    # print(f"Deleting document ID: {doc.id} with date: {date_str}")
-                    collection_ref.document(doc.id).delete()
-            except ValueError as e:
-                print(f"::error::Error parsing date for document ID: {doc.id} - {e}")
 
 def remove_unused_names():
     names_collection_ref = db.collection("names")
@@ -126,66 +107,42 @@ def remove_unused_names():
             print("Deleting unused name: {first_name} {last_name}")
             names_collection_ref.document(name_doc.id).delete()
 
+def delete_old_entries(collection):
+    one_year_ago = datetime.now() - timedelta(days=365)
+    collection_ref = db.collection(collection)
+    docs = collection_ref.stream()
+    
+    for doc in docs:
+        doc_data = doc.to_dict()
+        date_str = doc_data.get('transactionDate')
+        
+        if date_str:
+            try:
+                date_obj = datetime.strptime(date_str, '%Y-%m-%d')
+                if date_obj < one_year_ago:
+                    print(f"Deleting document ID: {doc.id} with date: {date_str}")
+                    collection_ref.document(doc.id).delete()
+            except ValueError as e:
+                print(f"Error parsing date for document ID: {doc.id} - {e}")
 
 
 def update(collection):
-    new_trades = []
-
     data = fetch_data_senate_disclosure(0)
     parsed_data = parse_senate_disclosure(data)
-    new_trades.append(upload_trade_data_to_firestore(parsed_data, collection))
+    new_trades1 = upload_trade_data_to_firestore(parsed_data, collection)
     upload_names_to_firestore(parsed_data)
 
     data = fetch_data_senate_trading(0)
     parsed_data = parse_senate_trading(data)
-    new_trades.append(upload_trade_data_to_firestore(parsed_data, collection))
+    new_trades2 = upload_trade_data_to_firestore(parsed_data, collection)
+
     upload_names_to_firestore(parsed_data)
 
     remove_unused_names()
 
-    print("::debug::Total of " + str(len(new_trades)) + " new trades added")
-
-def fetch_fcm_tokens():
-    tokens = []
-
-    # Fetch tokens from Firestore
-    collection_ref = db.collection('fcm_tokens')
-    docs = collection_ref.get()
-
-    for doc in docs:
-        tokens.append(doc.to_dict().get('token'))
-
-    return tokens
-
-def send_data_message(tokens, trades_data):
-    # Convert the trades_data array to a JSON string
-    trades_data_json = json.dumps(trades_data)
-
-    # Construct the data message payload
-    data_message = messaging.MulticastMessage(
-        data={
-            'trades_data': trades_data_json
-        },
-        tokens=tokens
-    )
-
-    # Send the message
-    response = messaging.send_multicast(data_message)
-    print(f'Successfully sent message: {response.success_count} messages were sent successfully')
+    print("Total of " + str(len(new_trades1 + new_trades2)) + " new trades added")
     
-    if response.failure_count > 0:
-        responses = response.responses
-        failed_tokens = []
-        for idx, resp in enumerate(responses):
-            if not resp.success:
-                # The token is invalid, log the token and error message
-                failed_tokens.append(tokens[idx])
-                print(f'Token {tokens[idx]} failed: {resp.exception}')
-        remove_invalid_tokens(failed_tokens)
-
-def remove_invalid_tokens(tokens):
-    for token in tokens:
-        db.collection('device_tokens').document(token).delete()
+    delete_old_entries(collection)
 
     send_data_message(count_name_occurrences(new_trades1 + new_trades2))
 
