@@ -13,8 +13,9 @@ data class Trade(
     val assetDescription: String = "",
     val type: String = "",
     val amount: String = "",
-    val ticker: String = ""
+    val ticker: String = "",
+    val hash: String = ""
 ) : Parcelable {
     // No-argument constructor
-    constructor() : this("", "", "", "", "", "", "", "", "", "")
+    constructor() : this("", "", "", "", "", "", "", "", "", "", "")
 }
