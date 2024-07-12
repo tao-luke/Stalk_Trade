@@ -1,4 +1,4 @@
-name: Update DB
+name: Simulate New Trades
 
 on:
   workflow_dispatch:  # Allows manual triggering
