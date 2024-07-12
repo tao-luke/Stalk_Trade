@@ -33,14 +33,29 @@ def send_data_message(data):
     
     if response.failure_count > 0:
         responses = response.responses
-        failed_tokens = []
         for idx, resp in enumerate(responses):
             if not resp.success:
                 # The token is invalid, log the token and error message
-                failed_tokens.append(fcm_tokens[idx])
                 print(f'Token {fcm_tokens[idx]} failed: {resp.exception}')
-        remove_invalid_tokens(failed_tokens)
+                delete_fcm_token(fcm_tokens[idx])
 
-def remove_invalid_tokens(tokens):
-    for token in tokens:
-        db.collection('device_tokens').document(token).delete()
+
+# Function to delete documents based on the token field
+def delete_fcm_token(token_value):
+    try:
+        # Query the collection to find documents where the token field matches the specified value
+        query = db.collection('fcm_tokens').where('token', '==', token_value)
+        results = query.get()
+
+        # Check if any documents were found
+        if not results:
+            print(f'No documents found with token: {token_value}')
+            return
+
+        # Delete each document that matches the query
+        for doc in results:
+            doc.reference.delete()
+            print(f'Deleted document with ID: {doc.id}')
+
+    except Exception as e:
+        print(f'An error occurred: {e}')
