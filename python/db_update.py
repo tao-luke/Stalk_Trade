@@ -143,8 +143,9 @@ def update(collection):
     print("Total of " + str(len(new_trades1 + new_trades2)) + " new trades added")
     
     delete_old_entries(collection)
-
-    send_data_message(count_name_occurrences(new_trades1 + new_trades2))
+    
+    if len(new_trades1 + new_trades2) > 0:
+        send_data_message(count_name_occurrences(new_trades1 + new_trades2))
 
 def main():
     update("all_trades")
