@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
@@ -31,10 +32,24 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            requestNotificationPermission()
+            showEducationalDialog()
         } else {
             setupNavigation()
         }
+    }
+
+    private fun showEducationalDialog() {
+        AlertDialog.Builder(this)
+            .setTitle("Disclaimer")
+            .setMessage("This app is for educational purposes only. Use the information at your own risk and ensure you comply with all trading regulations. We are not responsible for any financial losses.")
+            .setPositiveButton("Agree") { _, _ ->
+                requestNotificationPermission()
+            }
+            .setNegativeButton("Disagree") { _, _ ->
+                Toast.makeText(this, "You must agree to continue using the app.", Toast.LENGTH_LONG).show()
+                finish() // Exit the app
+            }
+            .show()
     }
 
     private fun requestNotificationPermission() {
@@ -47,7 +62,7 @@ class MainActivity : AppCompatActivity() {
                     setupNavigation()
                 } else {
                     // Permission is denied, show a message and exit
-                    Toast.makeText(this, "Notification permission is required for this app, please enable it in setting.", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "Notification permission is required for this app, please enable it in settings.", Toast.LENGTH_LONG).show()
                     finish() // Exit the app
                 }
             }
