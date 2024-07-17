@@ -117,7 +117,7 @@ class PoliticianFragment : Fragment(), TableAdapter.OnItemClickListener {
 
         // Display the transaction volume
         tradeViewModel.getTransactionVolume(firstName, lastName).observe(viewLifecycleOwner) { volume ->
-            binding.textViewTransactionVolume.text = "Transaction Volume: $volume"
+            binding.textViewTransactionVolume.text = "Number of Transactions: $volume"
         }
 
         // Display the performance
