@@ -1,5 +1,7 @@
 package com.example.stalk.repository
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 
@@ -30,6 +32,18 @@ class FirestoreRepository {
 
     fun getNames(): Query {
         return names
+    }
+
+    fun fetchTransactionVolume(firstName: String, lastName: String): LiveData<Int> {
+        val volume = MutableLiveData<Int>()
+        trades
+            .whereEqualTo("firstName", firstName)
+            .whereEqualTo("lastName", lastName)
+            .get()
+            .addOnSuccessListener { result ->
+                volume.value = result.size()
+            }
+        return volume
     }
 
 }

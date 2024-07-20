@@ -20,8 +20,6 @@ class TradeViewModel : ViewModel() {
     private val _overviewTrades = MutableLiveData<List<Trade>>()
     val overviewTrades: LiveData<List<Trade>> get() = _overviewTrades
 
-    private val db = FirebaseFirestore.getInstance()
-
     fun fetchRecentTradesByName(firstName: String, lastName: String) {
         repository.getRecentTradesByName(firstName, lastName).get()
             .addOnSuccessListener { result ->
@@ -58,14 +56,6 @@ class TradeViewModel : ViewModel() {
     }
 
     fun getTransactionVolume(firstName: String, lastName: String): LiveData<Int> {
-        val volume = MutableLiveData<Int>()
-        db.collection("all_trades")
-            .whereEqualTo("firstName", firstName)
-            .whereEqualTo("lastName", lastName)
-            .get()
-            .addOnSuccessListener { result ->
-                volume.value = result.size()
-            }
-        return volume
+        return repository.fetchTransactionVolume(firstName, lastName)
     }
 }
