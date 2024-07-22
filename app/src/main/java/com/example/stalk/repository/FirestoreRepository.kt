@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import kotlin.math.roundToInt
 
 class FirestoreRepository {
 
@@ -34,7 +35,7 @@ class FirestoreRepository {
         return names
     }
 
-    fun fetchTransactionVolume(firstName: String, lastName: String): LiveData<Int> {
+    fun fetchTradeVolume(firstName: String, lastName: String): LiveData<Int> {
         val volume = MutableLiveData<Int>()
         trades
             .whereEqualTo("firstName", firstName)
@@ -46,4 +47,38 @@ class FirestoreRepository {
         return volume
     }
 
+    fun fetchTransactionVolume(firstName: String, lastName: String): LiveData<Int> {
+        val volume = MutableLiveData<Int>()
+        trades
+            .whereEqualTo("firstName", firstName)
+            .whereEqualTo("lastName", lastName)
+            .get()
+            .addOnSuccessListener { result ->
+                val medians = result.mapNotNull { document ->
+                    try {
+                        val amount = document.getString("amount") ?: return@mapNotNull null
+                        val ranges = amount.split(" - ").mapNotNull {
+                            it.removePrefix("$").replace(",", "").toDoubleOrNull()
+                        }
+                        if (ranges.size == 2) {
+                            (ranges[0] + ranges[1]) / 2
+                        } else {
+                            null
+                        }
+                    } catch (e: Exception) {
+                        null // Skip this trade if any parsing error occurs
+                    }
+                }
+                val totalVolume = if (medians.isNotEmpty()) {
+                    medians.sum()
+                } else {
+                    0.0
+                }
+                volume.value = totalVolume.roundToInt()
+            }
+            .addOnFailureListener { e ->
+                volume.value = 0 // Set to 0 in case of a failure
+            }
+        return volume
+    }
 }

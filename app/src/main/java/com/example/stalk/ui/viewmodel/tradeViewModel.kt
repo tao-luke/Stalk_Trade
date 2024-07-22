@@ -55,7 +55,12 @@ class TradeViewModel : ViewModel() {
             }
     }
 
+    fun getTradeVolume(firstName: String, lastName: String): LiveData<Int> {
+        return repository.fetchTradeVolume(firstName, lastName)
+    }
+
     fun getTransactionVolume(firstName: String, lastName: String): LiveData<Int> {
         return repository.fetchTransactionVolume(firstName, lastName)
     }
+
 }

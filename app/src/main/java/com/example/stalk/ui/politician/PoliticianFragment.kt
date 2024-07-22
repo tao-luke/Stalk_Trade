@@ -115,10 +115,21 @@ class PoliticianFragment : Fragment(), TableAdapter.OnItemClickListener {
             }, 1000)
         }
 
+        tradeViewModel.getTradeVolume(firstName, lastName).observe(viewLifecycleOwner) { volume ->
+            binding.textViewTransactionVolume.text = "Transaction Volume: $volume"
+        }
         // Display the transaction volume
         tradeViewModel.getTransactionVolume(firstName, lastName).observe(viewLifecycleOwner) { volume ->
-            binding.textViewTransactionVolume.text = "Number of Transactions: $volume"
+            val formattedVolume = "~$${volume.toString().reversed().chunked(3).joinToString(",").reversed()}"
+
+            // Create a StringBuilder and append the new text
+            val currentText = binding.textViewTransactionVolume.text.toString()
+            val updatedText = StringBuilder(currentText).append(" [$formattedVolume]")
+
+            // Set the updated text back to the TextView
+            binding.textViewTransactionVolume.text = updatedText.toString()
         }
+
 
         // Display the performance
         politicianViewModel.politician.observe(viewLifecycleOwner) { updatedPolitician ->
